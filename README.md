@@ -30,6 +30,13 @@ assert_eq!(p.list.as_deref(), Some("admin"));
 
 `parse`'s third argument lists span texts the user turned back into plain text: with `&["tomorrow"]`, "read tomorrow and today" keeps "tomorrow" in its title.
 
+From JS, load the wasm build (CI keeps it as the `quando-wasm` artifact) with [`js/quando.mjs`](js/quando.mjs). `parse` returns the `want` shape from `tests/cases.json`, and spans count UTF-16 units as JS strings do:
+
+```js
+const { parse } = await load(await (await fetch("quando.wasm")).arrayBuffer());
+parse("call bank at 5 tomorrow #admin", new Date()); // { title: "call bank", date: "2026-11-21T17:00", list: "admin", ... }
+```
+
 ## Options
 
 `Options::default()` turns every switch off. `parse` uses `Options::todo()`, which turns on `forward` and `bare_hour_pm`; `parse_with` takes your own.
@@ -61,7 +68,7 @@ It leaves alone what only looks like a date: "call may", "boil eggs 10 minutes",
 ```sh
 cargo test
 cargo clippy --all-targets -- -D warnings
-cargo build --release --target wasm32-unknown-unknown
+cargo build --release --target wasm32-unknown-unknown && node js/cases.test.mjs   # cases.json through the wasm
 QUANDO_MISSES=1 cargo test --test bench -- --nocapture   # benchmark score and every phrase it disagrees on
 ```
 

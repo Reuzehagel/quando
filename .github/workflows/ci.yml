@@ -15,3 +15,9 @@ jobs:
           components: clippy
       - uses: Swatinem/rust-cache@v2
       - run: ./scripts/check.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: quando-wasm
+          path: |
+            target/wasm32-unknown-unknown/release/quando.wasm
+            js/quando.mjs

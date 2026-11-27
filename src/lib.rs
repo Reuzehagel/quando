@@ -11,6 +11,8 @@ mod calendar;
 mod date;
 mod todo;
 mod words;
+#[cfg(any(test, target_arch = "wasm32"))]
+mod wasm;
 
 use date::{read_date, resolve};
 pub use todo::{parse, parse_with, Parsed, Repeat, Unit};
