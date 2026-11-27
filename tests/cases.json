@@ -1,0 +1,542 @@
+{
+  "now": "2026-11-20T14:00",
+  "cases": [
+    {
+      "input": "dentist tomorrow at 11",
+      "want": {
+        "title": "dentist",
+        "date": "2026-11-21T11:00",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 8,
+            "end": 22,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "dentist tomorrow at 1",
+      "want": {
+        "title": "dentist",
+        "date": "2026-11-21T13:00",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 8,
+            "end": 21,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "dentist tomorrow at 12",
+      "want": {
+        "title": "dentist",
+        "date": "2026-11-21T12:00",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 8,
+            "end": 22,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "dentist fri 9",
+      "want": {
+        "title": "dentist",
+        "date": "2026-11-27T09:00",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 8,
+            "end": 13,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "fri",
+      "want": {
+        "title": "",
+        "date": "2026-11-27",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 0,
+            "end": 3,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "call bank at 9",
+      "want": {
+        "title": "call bank",
+        "date": "2026-11-21T09:00",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 10,
+            "end": 14,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "call bank at 5",
+      "want": {
+        "title": "call bank",
+        "date": "2026-11-20T17:00",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 10,
+            "end": 14,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "call bank at 5am",
+      "want": {
+        "title": "call bank",
+        "date": "2026-11-21T05:00",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 10,
+            "end": 16,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "call bank 05:30",
+      "want": {
+        "title": "call bank",
+        "date": "2026-11-21T05:30",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 10,
+            "end": 15,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "call bank 5:30",
+      "want": {
+        "title": "call bank",
+        "date": "2026-11-20T17:30",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 10,
+            "end": 14,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "pay rent nov 27 at 15:30",
+      "want": {
+        "title": "pay rent",
+        "date": "2026-11-27T15:30",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 9,
+            "end": 24,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "pay rent 27 nov",
+      "want": {
+        "title": "pay rent",
+        "date": "2026-11-27",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 9,
+            "end": 15,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "pay rent 3/12",
+      "want": {
+        "title": "pay rent",
+        "date": "2026-12-03",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 9,
+            "end": 13,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "pay rent 23 nov #work",
+      "want": {
+        "title": "pay rent",
+        "date": "2026-11-23",
+        "list": "work",
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 9,
+            "end": 15,
+            "kind": "date"
+          },
+          {
+            "start": 16,
+            "end": 21,
+            "kind": "list"
+          }
+        ]
+      }
+    },
+    {
+      "input": "in 3 days",
+      "want": {
+        "title": "",
+        "date": "2026-11-23",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 0,
+            "end": 9,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "buy tomorrow's paper",
+      "want": {
+        "title": "buy tomorrow's paper",
+        "date": null,
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": []
+      }
+    },
+    {
+      "input": "milk #groceries @errands !!",
+      "want": {
+        "title": "milk",
+        "date": null,
+        "list": "groceries",
+        "tags": [
+          "errands"
+        ],
+        "priority": 2,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 5,
+            "end": 15,
+            "kind": "list"
+          },
+          {
+            "start": 16,
+            "end": 24,
+            "kind": "tag"
+          },
+          {
+            "start": 25,
+            "end": 27,
+            "kind": "priority"
+          }
+        ]
+      }
+    },
+    {
+      "input": "email #work tomorrow 10am",
+      "want": {
+        "title": "email",
+        "date": "2026-11-21T10:00",
+        "list": "work",
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 6,
+            "end": 11,
+            "kind": "list"
+          },
+          {
+            "start": 12,
+            "end": 25,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "bins every monday",
+      "want": {
+        "title": "bins",
+        "date": "2026-11-23",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": {
+          "every": 1,
+          "unit": "week",
+          "weekday": 1,
+          "fromCompletion": false
+        },
+        "spans": [
+          {
+            "start": 5,
+            "end": 17,
+            "kind": "repeat"
+          }
+        ]
+      }
+    },
+    {
+      "input": "bins every friday",
+      "want": {
+        "title": "bins",
+        "date": "2026-11-20",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": {
+          "every": 1,
+          "unit": "week",
+          "weekday": 5,
+          "fromCompletion": false
+        },
+        "spans": [
+          {
+            "start": 5,
+            "end": 17,
+            "kind": "repeat"
+          }
+        ]
+      }
+    },
+    {
+      "input": "bins 23 nov every monday",
+      "want": {
+        "title": "bins",
+        "date": "2026-11-23",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": {
+          "every": 1,
+          "unit": "week",
+          "weekday": 1,
+          "fromCompletion": false
+        },
+        "spans": [
+          {
+            "start": 5,
+            "end": 11,
+            "kind": "date"
+          },
+          {
+            "start": 12,
+            "end": 24,
+            "kind": "repeat"
+          }
+        ]
+      }
+    },
+    {
+      "input": "water plants every 3 days after done",
+      "want": {
+        "title": "water plants",
+        "date": "2026-11-20",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": {
+          "every": 3,
+          "unit": "day",
+          "fromCompletion": true
+        },
+        "spans": [
+          {
+            "start": 13,
+            "end": 36,
+            "kind": "repeat"
+          }
+        ]
+      }
+    },
+    {
+      "input": "standup every weekday at 9",
+      "want": {
+        "title": "standup",
+        "date": "2026-11-21T09:00",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": {
+          "every": 1,
+          "unit": "day",
+          "weekdaysOnly": true,
+          "fromCompletion": false
+        },
+        "spans": [
+          {
+            "start": 8,
+            "end": 21,
+            "kind": "repeat"
+          },
+          {
+            "start": 22,
+            "end": 26,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "review monthly",
+      "want": {
+        "title": "review",
+        "date": "2026-11-20",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": {
+          "every": 1,
+          "unit": "month",
+          "fromCompletion": false
+        },
+        "spans": [
+          {
+            "start": 7,
+            "end": 14,
+            "kind": "repeat"
+          }
+        ]
+      }
+    },
+    {
+      "input": "meet at #1 spot",
+      "want": {
+        "title": "meet at spot",
+        "date": null,
+        "list": "1",
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 8,
+            "end": 10,
+            "kind": "list"
+          }
+        ]
+      }
+    },
+    {
+      "input": "wow! great",
+      "want": {
+        "title": "wow! great",
+        "date": null,
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": []
+      }
+    },
+    {
+      "input": "read tomorrow and today",
+      "ignored": [
+        "tomorrow"
+      ],
+      "want": {
+        "title": "read tomorrow and",
+        "date": "2026-11-20",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 18,
+            "end": 23,
+            "kind": "date"
+          }
+        ]
+      }
+    }
+  ]
+}
