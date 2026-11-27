@@ -2,10 +2,12 @@
 //! and the spans an editor highlights while you type.
 
 mod calendar;
+mod date;
 mod words;
 
-use calendar::{days_from_civil, valid, weekday_of};
-use words::{month, weekday, words, Word};
+use calendar::{days_from_civil, weekday_of};
+use date::{read_date, resolve};
+use words::{spaced, weekday, words, Word};
 
 /// A wall-clock time with no zone: quando reads the line in the zone `now` is in.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -194,12 +196,6 @@ fn bangs(text: &str) -> Vec<(usize, usize)> {
         .collect()
 }
 
-/// The gap between two words is only whitespace.
-fn spaced(rest: &str, a: &Word, b: &Word) -> bool {
-    let gap = &rest[a.end..b.start];
-    !gap.is_empty() && gap.chars().all(char::is_whitespace)
-}
-
 /// "every monday", "every 3 days after done", "every other week", "daily": the end of the phrase and its rule.
 fn read_repeat(rest: &str, ws: &[Word], i: usize) -> Option<(usize, Repeat)> {
     let plain = |every, unit| Repeat { every, unit, weekday: None, weekdays_only: false, from_completion: false, day: None };
@@ -243,209 +239,10 @@ fn read_repeat(rest: &str, ws: &[Word], i: usize) -> Option<(usize, Repeat)> {
     Some((ws[last].end, r))
 }
 
-enum Day {
-    /// A calendar date; without a year it is the next one from today.
-    On { year: Option<i32>, month: u8, day: u8 },
-    Weekday(u8),
-    InDays(i64),
-    /// The same day of the month, clamped: a month on from 31 Jan is 28 Feb.
-    InMonths(i64),
-    /// "in an hour": a moment, so it carries its own time.
-    InMinutes(i64),
-}
-
-/// "in 3 months", "next year": a count and a unit.
-fn ahead(n: i64, unit: &str) -> Option<Day> {
-    Some(match unit {
-        "day" | "days" => Day::InDays(n),
-        "week" | "weeks" => Day::InDays(7 * n),
-        "month" | "months" => Day::InMonths(n),
-        "year" | "years" => Day::InMonths(12 * n),
-        "hour" | "hours" | "hr" | "hrs" => Day::InMinutes(60 * n),
-        "minute" | "minutes" | "min" | "mins" => Day::InMinutes(n),
-        _ => return None,
-    })
-}
-
-struct Time {
-    hour: u8,
-    minute: u8,
-    /// am or pm was written.
-    meridiem: bool,
-    /// Written as "05:30": a morning on purpose.
-    zero: bool,
-}
-
-struct DateMatch {
-    day: Option<Day>,
-    time: Option<Time>,
-    end: usize,
-}
-
-/// A date phrase starting at word `i`: a day, a time, or both in either order.
-fn read_date(rest: &str, ws: &[Word], i: usize) -> Option<DateMatch> {
-    let then = |j: usize| (j < ws.len() && spaced(rest, &ws[j - 1], &ws[j])).then_some(j);
-    if let Some((day, j)) = read_day(rest, ws, i) {
-        // after a day, a bare hour is a time: "fri 9"; "in an hour" already has one
-        let time = then(j).filter(|_| !matches!(day, Day::InMinutes(_))).and_then(|j| read_time(rest, ws, j, true));
-        if let Some((time, k)) = time {
-            return Some(DateMatch { day: Some(day), time: Some(time), end: ws[k - 1].end });
-        }
-        return Some(DateMatch { day: Some(day), time: None, end: ws[j - 1].end });
-    }
-    let (time, j) = read_time(rest, ws, i, false)?;
-    if let Some((day, k)) = then(j).and_then(|j| read_day(rest, ws, j)) {
-        return Some(DateMatch { day: Some(day), time: Some(time), end: ws[k - 1].end });
-    }
-    Some(DateMatch { day: None, time: Some(time), end: ws[j - 1].end })
-}
-
-fn number(w: &str, max_len: usize) -> Option<u32> {
-    (!w.is_empty() && w.len() <= max_len && w.bytes().all(|b| b.is_ascii_digit())).then(|| w.parse().unwrap())
-}
-
-/// "27", "27th": a day of the month.
-fn day_number(w: &str) -> Option<u8> {
-    let digits = ["st", "nd", "rd", "th"].iter().find_map(|s| w.strip_suffix(s)).unwrap_or(w);
-    number(digits, 2).filter(|d| (1..=31).contains(d)).map(|d| d as u8)
-}
-
-/// The day part, and the index of the word after it. A date that can't exist ("31/2") isn't one.
-fn read_day(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
-    // 2000 was a leap year, so a 29 Feb without a year passes
-    read_day_any(rest, ws, i).filter(|(d, _)| !matches!(*d, Day::On { year, month, day } if !valid(year.unwrap_or(2000), month, day)))
-}
-
-fn read_day_any(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
-    let at = |j: usize| (j < ws.len()).then(|| ws[j].lower.as_str());
-    let spaced_to = |j: usize| j < ws.len() && spaced(rest, &ws[j - 1], &ws[j]);
-    let year_after = |j: usize| spaced_to(j).then(|| number(&ws[j].lower, 4).filter(|_| ws[j].lower.len() == 4)).flatten();
-    let w = at(i)?;
-    match w {
-        "today" => return Some((Day::InDays(0), i + 1)),
-        "tomorrow" => return Some((Day::InDays(1), i + 1)),
-        "in" if spaced_to(i + 1) && spaced_to(i + 2) => {
-            let n = match at(i + 1)? {
-                "a" | "an" => 1,
-                w => number(w, 3)? as i64,
-            };
-            return Some((ahead(n, at(i + 2)?)?, i + 3));
-        }
-        // "next week" is next Monday (on a Sunday, tomorrow); "in a week" is seven days
-        "next" if spaced_to(i + 1) => match at(i + 1)? {
-            "week" => return Some((Day::Weekday(1), i + 2)),
-            "month" | "year" | "hour" => return Some((ahead(1, at(i + 1)?)?, i + 2)),
-            _ => {}
-        },
-        _ => {}
-    }
-    if let Some(d) = weekday(w) {
-        return Some((Day::Weekday(d), i + 1));
-    }
-    // "nov 27", "nov 27 2027"
-    if let Some(m) = month(w) {
-        let day = spaced_to(i + 1).then(|| day_number(&ws[i + 1].lower)).flatten()?;
-        let year = year_after(i + 2);
-        return Some((Day::On { year: year.map(|y| y as i32), month: m, day }, i + 2 + year.is_some() as usize));
-    }
-    // "27 nov", "27 nov 2027"
-    if let Some(day) = day_number(w)
-        && let Some(m) = spaced_to(i + 1).then(|| month(&ws[i + 1].lower)).flatten() {
-            let year = year_after(i + 2);
-            return Some((Day::On { year: year.map(|y| y as i32), month: m, day }, i + 2 + year.is_some() as usize));
-        }
-    // "3/12", "3/12/2026": day first
-    let slash = |j: usize| j < ws.len() && &rest[ws[j - 1].end..ws[j].start] == "/";
-    let day = number(w, 2)?;
-    let m = slash(i + 1).then(|| number(&ws[i + 1].lower, 2)).flatten().filter(|m| (1..=12).contains(m))?;
-    let year = slash(i + 2).then(|| number(&ws[i + 2].lower, 4).filter(|_| ws[i + 2].lower.len() == 4)).flatten();
-    Some((Day::On { year: year.map(|y| y as i32), month: m as u8, day: day as u8 }, i + 2 + year.is_some() as usize))
-}
-
-/// "at 5", "5pm", "15:30", "10:30 am", and a bare "9" when `bare` (after a day). Returns the index of the word after it.
-fn read_time(rest: &str, ws: &[Word], i: usize, bare: bool) -> Option<(Time, usize)> {
-    let mut j = i;
-    let with_at = ws[j].lower == "at" && j + 1 < ws.len() && spaced(rest, &ws[j], &ws[j + 1]);
-    if with_at {
-        j += 1;
-    }
-    let split = |w: &str| ["am", "pm"].iter().find_map(|s| w.strip_suffix(s).map(|d| (d.to_string(), Some(*s))));
-    let (hour_text, mut suffix) = split(&ws[j].lower).unwrap_or((ws[j].lower.clone(), None));
-    let mut hour = number(&hour_text, 2)?;
-    let mut minute = None;
-    if suffix.is_none() && j + 1 < ws.len() && &rest[ws[j].end..ws[j + 1].start] == ":" {
-        let (m, s) = split(&ws[j + 1].lower).unwrap_or((ws[j + 1].lower.clone(), None));
-        if m.len() == 2 {
-            minute = Some(number(&m, 2)?);
-            suffix = s;
-            j += 1;
-        }
-    }
-    if suffix.is_none() && j + 1 < ws.len() && spaced(rest, &ws[j], &ws[j + 1]) && matches!(ws[j + 1].lower.as_str(), "am" | "pm") {
-        suffix = Some(if ws[j + 1].lower == "am" { "am" } else { "pm" });
-        j += 1;
-    }
-    if !(with_at || bare || minute.is_some() || suffix.is_some()) {
-        return None;
-    }
-    if let Some(s) = suffix {
-        if !(1..=12).contains(&hour) {
-            return None;
-        }
-        hour = hour % 12 + if s == "pm" { 12 } else { 0 };
-    }
-    let minute = minute.unwrap_or(0);
-    if hour > 23 || minute > 59 {
-        return None;
-    }
-    let zero = hour_text.len() == 2 && hour_text.starts_with('0') && suffix.is_none();
-    Some((Time { hour: hour as u8, minute: minute as u8, meridiem: suffix.is_some(), zero }, j + 1))
-}
-
 /// "tomorrow's paper" is a title, not a date.
 fn possessive(after: &str) -> bool {
     let s = after.strip_prefix("'s").or_else(|| after.strip_prefix("’s"));
     s.is_some_and(|s| !s.starts_with(|c: char| c.is_alphanumeric() || c == '_'))
-}
-
-/// The phrase as a moment, and whether it has a time.
-fn resolve(m: DateMatch, now: DateTime) -> (DateTime, bool) {
-    let today = days_from_civil(now.year, now.month, now.day);
-    if let Some(Day::InMinutes(n)) = m.day {
-        let at = today * 1440 + now.hour as i64 * 60 + now.minute as i64 + n;
-        let (year, month, day) = calendar::civil_from_days(at.div_euclid(1440));
-        let (hour, minute) = ((at.rem_euclid(1440) / 60) as u8, (at.rem_euclid(60)) as u8);
-        return (DateTime { year, month, day, hour, minute }, true);
-    }
-    let (mut hour, minute) = m.time.as_ref().map_or((0, 0), |t| (t.hour, t.minute));
-    // A bare "5" is 17:00, since nobody plans tasks for 05:00; "5am" and "05:00" mean what they say.
-    if m.time.as_ref().is_some_and(|t| !t.meridiem && !t.zero && (1..=7).contains(&t.hour)) {
-        hour += 12;
-    }
-    let days = match m.day {
-        Some(Day::InDays(n)) => today + n,
-        Some(Day::InMinutes(_)) => unreachable!("resolved above, with its own time"),
-        Some(Day::InMonths(n)) => {
-            let months = now.year as i64 * 12 + now.month as i64 - 1 + n;
-            let (y, m) = (months.div_euclid(12) as i32, (months.rem_euclid(12) + 1) as u8);
-            let last = (28..=31).rev().find(|&d| valid(y, m, d)).unwrap();
-            days_from_civil(y, m, now.day.min(last))
-        }
-        // "fri" on a Friday means next week
-        Some(Day::Weekday(d)) => today + ((d as i64 - weekday_of(today) as i64 + 6).rem_euclid(7) + 1),
-        Some(Day::On { year: Some(y), month, day }) => days_from_civil(y, month, day),
-        // the next one from today; a 29 Feb can be years away
-        Some(Day::On { year: None, month, day }) => (now.year..now.year + 8)
-            .filter(|&y| valid(y, month, day))
-            .map(|y| days_from_civil(y, month, day))
-            .find(|&d| d >= today)
-            .unwrap_or(today),
-        // "at 5": today, unless it has passed
-        None if (hour, minute) <= (now.hour, now.minute) => today + 1,
-        None => today,
-    };
-    let (year, month, day) = calendar::civil_from_days(days);
-    (DateTime { year, month, day, hour, minute }, m.time.is_some())
 }
 
 /// With a repeat and no date: today, or the repeat's next weekday ("every friday" on a Friday starts today).

@@ -11,20 +11,33 @@ let p = quando::parse("call bank at 5 tomorrow #admin", now, &[]);
 
 ## What it reads
 
-- Days: `today`, `tomorrow`, weekdays (`fri`, `friday`), `in 3 days`, `in a week`, `in 3 months`, `in 2 years`, `next week` (next Monday, as a date picker's button; `in a week` is seven days), `next month`, `next year` (months keep the day, clamped: a month on from 31 Jan is 28 Feb), `27 nov`, `nov 27th`, `27 nov 2027`, `3/12` (day first), `3/12/2026`.
-- Moments: `in an hour`, `in 2 hours`, `in 30 minutes`, `in 90 mins`: from now, to the minute.
-- Times: `at 5`, `5pm`, `10:30 am`, `15:30`, `05:30`, and a bare hour after a day (`fri 9`). A bare 1 to 7 is the afternoon; `5am` and `05:30` mean what they say. A time on its own is today, or tomorrow once it has passed.
-- Repeats: `daily`, `weekly`, `monthly`, `yearly`, `every monday`, `every other week`, `every 3 days`, `every weekday`, and `after done`.
+- Days: `today`, `tomorrow`, `yesterday`, `tonight`, `this morning`, weekdays (`fri`, `friday`), `27 nov`, `nov 27th`, `12th of July`, `Dec. 21`, `27 nov 2027`, `Jan 1, 2020`, `3/12` (day first), `5/31` (month first when day first can't be a date), `3/12/2026`, `2014-04-18`.
+- Months: `in June`, `September 2012`, `9/2012`, `end of month`, `end of next month`, `end of July`, `end of this year`. A month name alone stays text: "call may".
+- Relative: `in 3 days`, `in five days`, `in a week`, `in 3 months`, `next week` (next Monday, as a date picker's button), `next month`, `next year`, `next 2 weeks`, `2 days later`, `3 weeks from now`, `after a year`, `5 days ago`. Months keep the day, clamped: a month on from 31 Jan is 28 Feb.
+- Moments: `now`, `in an hour`, `in 30 minutes`: from now, to the minute.
+- Times: `at 5`, `5pm`, `10:30 am`, `15:30`, `05:30`, `at 12.30`, `noon`, `midnight`, and a bare hour after a day (`fri 9`). A bare 1 to 7 is the afternoon; `5am` and `05:30` mean what they say. A time on its own is today, or tomorrow once it has passed.
+- Parts of the day: `tomorrow morning`, `6 in the morning`, `11 at night`, `11 tonight`, `this afternoon at 3`.
+- Parts join with spaces, commas, `at`, `on`, `of`, `by`, `before`, `after`: `Tuesday, 10 January`, `tomorrow by 5pm`, `at midnight on 12th August`.
+- Repeats: `daily`, `weekly`, `monthly`, `yearly`, `every monday`, `every other week`, `every 3 days`, `every weekday`, and `after done`. A repeat with only a time starts on a day it allows.
 - Markers: `#list`, `@tag`, `!` to `!!!`.
 
 ## The tests
 
 - `tests/cases.json`: what OpenTodo's TypeScript parser (on chrono-node) returns for its phrase tests, as of Friday 2026-11-20 14:00. quando matches all of it. Regenerate with `node tools/export-cases.ts tests/cases.json` from a sibling `../opentodo` checkout.
-- `tests/quando.json`: phrases OpenTodo doesn't test, or reads differently. A case here overrides the one in `cases.json` with the same input. The differences: `fri 5:30` is 17:30 here, 05:30 there; `standup every weekday at 9` on a Friday afternoon starts Monday here, Saturday there.
+- `tests/quando.json`: phrases OpenTodo doesn't test, or reads differently (`fri 5:30` is 17:30 here, 05:30 there). A case here overrides the one in `cases.json` with the same input.
+- `tests/bench.json`: the benchmark. The 569 English phrases from chrono-node's own test suite (MIT), as OpenTodo reads them. `tests/bench.rs` fails if quando agrees on fewer than its `FLOOR`, so the score only goes up. It measures agreement, not correctness: a phrase quando reads better belongs in `quando.json`. Regenerate with `node tools/export-bench.ts <chrono checkout> tests/bench.json`.
 
 A phrase that reads wrong gets a case before it gets a fix. Span offsets are bytes in Rust and UTF-16 units in JavaScript; they agree while a line is ASCII.
 
 ```sh
 cargo test
+QUANDO_MISSES=1 cargo test --test bench -- --nocapture   # the score, and every phrase it disagrees on
 cargo build --release --target wasm32-unknown-unknown
 ```
+
+## Benchmark
+
+| | agrees with OpenTodo |
+|---|---|
+| first parser | 120/569 (21%) |
+| parts joined, parts of the day, months, ISO dates | 251/569 (44%) |

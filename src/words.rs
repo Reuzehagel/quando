@@ -41,3 +41,9 @@ pub fn month(w: &str) -> Option<u8> {
     let w = if w == "sept" { "sep" } else { w };
     NAMES.iter().position(|n| w.len() >= 3 && (*n == w || (w.len() == 3 && n.starts_with(w)))).map(|m| m as u8 + 1)
 }
+
+/// The gap between two words is only whitespace.
+pub fn spaced(rest: &str, a: &Word, b: &Word) -> bool {
+    let gap = &rest[a.end..b.start];
+    !gap.is_empty() && gap.chars().all(char::is_whitespace)
+}

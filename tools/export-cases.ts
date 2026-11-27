@@ -9,7 +9,8 @@ const inputs: [string, string[]?][] = [
   ["pay rent nov 27 at 15:30"], ["pay rent 27 nov"], ["pay rent 3/12"], ["pay rent 23 nov #work"], ["in 3 days"],
   ["buy tomorrow's paper"], ["milk #groceries @errands !!"], ["email #work tomorrow 10am"],
   ["bins every monday"], ["bins every friday"], ["bins 23 nov every monday"], ["water plants every 3 days after done"],
-  ["standup every weekday at 9"], ["review monthly"], ["meet at #1 spot"], ["wow! great"],
+  ["standup every weekday at 9"], ["bins every friday at 9"], ["bins every friday at 5"], ["review monthly"], ["meet at #1 spot"], ["wow! great"],
+  ["dentist next month"], ["in 3 months"], ["renew passport next year"], ["review next week"], ["review next week at 10"], ["review in a week"],
   ["read tomorrow and today", ["tomorrow"]],
 ]
 

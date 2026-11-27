@@ -1,14 +1,18 @@
-// How often quando reads chrono-node's English test phrases as OpenTodo does: `cargo run --example bench [-- misses]`.
-// The score is agreement, not correctness: see tools/export-bench.ts.
+// How often quando reads chrono-node's English test phrases as OpenTodo does. The score is agreement, not
+// correctness (see tools/export-bench.ts), and it only goes up: raise FLOOR when it does.
+// `cargo test --test bench -- --nocapture` prints the score; set QUANDO_MISSES=1 to list every disagreement.
 use quando::{parse, DateTime, SpanKind};
 use serde_json::Value;
 
-fn main() {
-    let file: Value = serde_json::from_str(include_str!("../tests/bench.json")).unwrap();
+const FLOOR: usize = 251;
+
+#[test]
+fn bench() {
+    let file: Value = serde_json::from_str(include_str!("bench.json")).unwrap();
     let n = |s: &str, r: std::ops::Range<usize>| s[r].parse::<i32>().unwrap();
     let now = file["now"].as_str().unwrap();
     let now = DateTime { year: n(now, 0..4), month: n(now, 5..7) as u8, day: n(now, 8..10) as u8, hour: n(now, 11..13) as u8, minute: n(now, 14..16) as u8 };
-    let show = std::env::args().any(|a| a == "misses");
+    let show = std::env::var_os("QUANDO_MISSES").is_some();
 
     let (mut same, mut missed, mut extra, mut differs) = (0, Vec::new(), Vec::new(), Vec::new());
     let cases = file["cases"].as_array().unwrap();
@@ -39,4 +43,5 @@ fn main() {
             list.iter().for_each(|l| println!("{l}"));
         }
     }
+    assert!(same >= FLOOR, "the benchmark fell from {FLOOR} to {same}: QUANDO_MISSES=1 cargo test --test bench -- --nocapture");
 }

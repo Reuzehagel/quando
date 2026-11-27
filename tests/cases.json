@@ -466,6 +466,62 @@
       }
     },
     {
+      "input": "bins every friday at 9",
+      "want": {
+        "title": "bins",
+        "date": "2026-11-27T09:00",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": {
+          "every": 1,
+          "unit": "week",
+          "weekday": 5,
+          "fromCompletion": false
+        },
+        "spans": [
+          {
+            "start": 5,
+            "end": 17,
+            "kind": "repeat"
+          },
+          {
+            "start": 18,
+            "end": 22,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "bins every friday at 5",
+      "want": {
+        "title": "bins",
+        "date": "2026-11-20T17:00",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": {
+          "every": 1,
+          "unit": "week",
+          "weekday": 5,
+          "fromCompletion": false
+        },
+        "spans": [
+          {
+            "start": 5,
+            "end": 17,
+            "kind": "repeat"
+          },
+          {
+            "start": 18,
+            "end": 22,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
       "input": "review monthly",
       "want": {
         "title": "review",
@@ -515,6 +571,114 @@
         "priority": 0,
         "repeat": null,
         "spans": []
+      }
+    },
+    {
+      "input": "dentist next month",
+      "want": {
+        "title": "dentist",
+        "date": "2026-12-20",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 8,
+            "end": 18,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "in 3 months",
+      "want": {
+        "title": "",
+        "date": "2027-02-20",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 0,
+            "end": 11,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "renew passport next year",
+      "want": {
+        "title": "renew passport",
+        "date": "2027-11-20",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 15,
+            "end": 24,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "review next week",
+      "want": {
+        "title": "review",
+        "date": "2026-11-23",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 7,
+            "end": 16,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "review next week at 10",
+      "want": {
+        "title": "review",
+        "date": "2026-11-23T10:00",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 7,
+            "end": 22,
+            "kind": "date"
+          }
+        ]
+      }
+    },
+    {
+      "input": "review in a week",
+      "want": {
+        "title": "review",
+        "date": "2026-11-27",
+        "list": null,
+        "tags": [],
+        "priority": 0,
+        "repeat": null,
+        "spans": [
+          {
+            "start": 7,
+            "end": 16,
+            "kind": "date"
+          }
+        ]
       }
     },
     {
