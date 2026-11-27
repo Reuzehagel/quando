@@ -1,0 +1,2 @@
+- Releasing or bumping the version: run `scripts/release.sh`; its header says which changes need which bump.
+- Reviewing a change: apply `CODING_STANDARDS.md`.
