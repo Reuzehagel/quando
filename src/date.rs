@@ -16,6 +16,12 @@ pub enum Day {
     /// "end of this year": 31 December, this many years on.
     EndOfYear(i64),
     Weekday(u8),
+    /// "next friday": that day in next week. Weeks start on Monday.
+    NextWeekday(u8),
+    /// "this weekend", "next weekend": the Saturday of this week or the next, and never before today.
+    Weekend(i64),
+    /// "the 5th": the next 5th of a month, today included.
+    Ordinal(u8),
     InDays(i64),
     /// The same day of the month, clamped: a month on from 31 Jan is 28 Feb.
     InMonths(i64),
@@ -221,8 +227,23 @@ fn read_day_any(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
         "yesterday" => return Some((Day::InDays(-1), i + 1)),
         "in" | "after" if spaced_to(i + 1) && spaced_to(i + 2) => return Some((ahead(count(at(i + 1)?)?, at(i + 2)?)?, i + 3)),
         // "next week" is next Monday (on a Sunday, tomorrow); "in a week" is seven days
+        "this" if spaced_to(i + 1) => {
+            let w = at(i + 1)?;
+            return if w == "weekend" { Some((Day::Weekend(0), i + 2)) } else { Some((Day::Weekday(weekday(w)?), i + 2)) };
+        }
+        // "the 5th", "the 5th of December"; a plain "the 2" is a count, not a day
+        "the" if spaced_to(i + 1) => {
+            if let Some((d @ Day::On { .. }, k)) = read_day_any(rest, ws, i + 1) {
+                return Some((d, k));
+            }
+            let w = at(i + 1)?;
+            let ordinal = ["st", "nd", "rd", "th"].iter().any(|s| w.ends_with(s));
+            return ordinal.then(|| day_number(w)).flatten().map(|d| (Day::Ordinal(d), i + 2));
+        }
         "next" if spaced_to(i + 1) => match at(i + 1)? {
             "week" => return Some((Day::Weekday(1), i + 2)),
+            "weekend" => return Some((Day::Weekend(1), i + 2)),
+            w if weekday(w).is_some() => return Some((Day::NextWeekday(weekday(w)?), i + 2)),
             "day" => return Some((Day::InDays(1), i + 2)),
             "month" | "year" | "hour" => return Some((ahead(1, at(i + 1)?)?, i + 2)),
             // "next 2 weeks"
@@ -406,8 +427,18 @@ pub fn resolve(m: DateMatch, now: DateTime) -> (DateTime, bool) {
     }
     // the month of a name: this one, or the next with that name
     let named = |year: Option<i32>, month: u8| year.unwrap_or(if month >= now.month { now.year } else { now.year + 1 });
+    let monday = today - (weekday_of(today) as i64 + 6).rem_euclid(7);
     let days = match m.day {
         Some(Day::InDays(n)) => today + n,
+        Some(Day::NextWeekday(d)) => monday + 7 + (d as i64 + 6).rem_euclid(7),
+        // on a Sunday, this weekend is today
+        Some(Day::Weekend(n)) => (monday + 5 + 7 * n).max(today),
+        Some(Day::Ordinal(d)) => (0..13)
+            .map(|k| months_on(now, k))
+            .filter(|&(y, mo)| valid(y, mo, d))
+            .map(|(y, mo)| days_from_civil(y, mo, d))
+            .find(|&x| x >= today)
+            .unwrap_or(today),
         Some(Day::InMinutes(_)) => unreachable!("resolved above, with its own time"),
         Some(Day::InMonths(n)) => {
             let (y, mo) = months_on(now, n);

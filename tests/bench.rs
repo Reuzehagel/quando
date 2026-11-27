@@ -4,7 +4,7 @@
 use quando::{parse, DateTime, SpanKind};
 use serde_json::Value;
 
-const FLOOR: usize = 251;
+const FLOOR: usize = 260;
 
 #[test]
 fn bench() {
@@ -25,6 +25,12 @@ fn bench() {
             if p.has_time { format!("{day}T{:02}:{:02}", d.hour, d.minute) } else { day }
         });
         let want = c["date"].as_str();
+        // quando's span takes a leading "on", "by" or "in" so the title reads well; chrono's leaves it out
+        let span = span.map(|s| {
+            let lead = c["span"][0].as_u64().map(|w| w as usize).filter(|&w| w > s.start && matches!(input[s.start..w].trim().to_lowercase().as_str(), "on" | "by" | "in"));
+            quando::Span { start: lead.unwrap_or(s.start), ..s.clone() }
+        });
+        let span = span.as_ref();
         let line = |got: &str| format!("{input:?}\n    want {} {}\n    got  {got}", want.unwrap_or("-"), c["span"]);
         match (want, &date) {
             (None, None) => same += 1,

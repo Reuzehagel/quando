@@ -50,6 +50,21 @@ fn months_clamp() {
     assert_eq!(date("in 1 year", "2028-02-29T10:00"), Some((2029, 2, 28)));
 }
 
+/// Weeks start on Monday: on a weekend, "next week" is the coming one and "this weekend" is today.
+#[test]
+fn weekends() {
+    let date = |s, now| parse(s, datetime(now), &[]).date.map(|d| (d.month, d.day));
+    let sunday = "2026-11-22T10:00";
+    assert_eq!(date("next week", sunday), Some((11, 23)));
+    assert_eq!(date("next friday", sunday), Some((11, 27)));
+    assert_eq!(date("this weekend", sunday), Some((11, 22)));
+    assert_eq!(date("next weekend", sunday), Some((11, 28)));
+    let saturday = "2026-11-21T10:00";
+    assert_eq!(date("this weekend", saturday), Some((11, 21)));
+    assert_eq!(date("next weekend", saturday), Some((11, 28)));
+    assert_eq!(date("next saturday", saturday), Some((11, 28)));
+}
+
 /// Anything typed gives an answer, never a panic: spans land on char boundaries whatever the bytes.
 #[test]
 fn never_panics() {

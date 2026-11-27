@@ -112,7 +112,10 @@ pub fn parse(text: &str, now: DateTime, ignored: &[&str]) -> Parsed {
     let ws = words(&line.rest);
     for i in 0..ws.len() {
         let Some(m) = read_date(&line.rest, &ws, i) else { continue };
-        if possessive(&text[m.end..]) || !line.take(ws[i].start, m.end, SpanKind::Date) {
+        // "dentist on friday" is a dentist: the word leading into the date goes with it
+        let lead = i > 0 && matches!(ws[i - 1].lower.as_str(), "on" | "by" | "in") && spaced(&line.rest, &ws[i - 1], &ws[i]);
+        let start = if lead { ws[i - 1].start } else { ws[i].start };
+        if possessive(&text[m.end..]) || !line.take(start, m.end, SpanKind::Date) {
             continue;
         }
         let time_only = m.day.is_none();
