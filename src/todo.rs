@@ -1,6 +1,6 @@
 // The todo layer: a typed line as a task. The title is what's left once the date, repeat, `#list`, `@tag` and `!` are read.
 use crate::calendar::{civil_from_days, days_from_civil, weekday_of};
-use crate::date::{read_date, resolve};
+use crate::date::{read_bare_time, read_date, resolve};
 use crate::words::{spaced, weekday, words, Word};
 use crate::{possessive, DateTime, Options, Span, SpanKind};
 
@@ -72,12 +72,12 @@ pub fn parse_with(text: &str, now: DateTime, ignored: &[&str], o: &Options) -> P
         }
     }
 
-    let mut repeat = None;
+    let (mut repeat, mut repeat_end) = (None, None);
     let ws = words(&line.rest);
     for i in 0..ws.len() {
         if let Some((end, r)) = read_repeat(&line.rest, &ws, i)
             && line.take(ws[i].start, end, SpanKind::Repeat) {
-                repeat = Some(r);
+                (repeat, repeat_end) = (Some(r), Some(end));
                 break;
             }
     }
@@ -85,7 +85,9 @@ pub fn parse_with(text: &str, now: DateTime, ignored: &[&str], o: &Options) -> P
     let mut date = None;
     let ws = words(&line.rest);
     for i in 0..ws.len() {
-        let Some(m) = read_date(&line.rest, &ws, i, o) else { continue };
+        // right after a repeat, a bare hour is its time: "every monday 9"
+        let after_repeat = repeat_end.is_some_and(|e| e < ws[i].start && line.rest[e..ws[i].start].trim().is_empty());
+        let Some(m) = read_date(&line.rest, &ws, i, o).or_else(|| after_repeat.then(|| read_bare_time(&line.rest, &ws, i)).flatten()) else { continue };
         // "dentist on friday" is a dentist: the word leading into the date goes with it
         let lead = i > 0 && matches!(ws[i - 1].lower.as_str(), "on" | "by" | "in") && spaced(&line.rest, &ws[i - 1], &ws[i]);
         let start = if lead { ws[i - 1].start } else { ws[i].start };

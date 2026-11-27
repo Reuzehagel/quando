@@ -122,11 +122,15 @@ pub fn read_date(rest: &str, ws: &[Word], i: usize, o: &Options) -> Option<DateM
         && let Some(to) = range_end(rest, ws, after).and_then(|k| read_date(rest, ws, k, o))
     {
         m.end = to.end;
-        // the start borrows what only the end says: the year in "Aug 10 - Nov 12, 2013", the day in "9am to 5pm, Tuesday"
+        // the start borrows what only the end says: the year in "Aug 10 - Nov 12, 2013", the day in "9am to 5pm, Tuesday",
+        // the time in "tomorrow until 5pm" (a task is due by then)
         match (&mut m.day, to.day) {
             (Some(Day::On { year: y @ None, .. }), Some(Day::On { year, .. })) => *y = year,
             (d @ None, day) => *d = day,
             _ => {}
+        }
+        if m.time.is_none() {
+            (m.time, m.part) = (to.time, m.part.or(to.part));
         }
     }
     // the year arrives after the date, so check the date again: "29 February 2014" isn't one
@@ -152,6 +156,12 @@ fn range_end(rest: &str, ws: &[Word], k: usize) -> Option<usize> {
 fn past_range(rest: &str, ws: &[Word], k: usize) -> usize {
     let day = |j: usize| day_number(&ws[j].lower).map(|_| j + 1).or_else(|| ordinal(rest, ws, j).map(|(_, k)| k));
     range_end(rest, ws, k).and_then(day).unwrap_or(k)
+}
+
+/// A bare hour where the day is said elsewhere: the "9" in "every monday 9".
+pub fn read_bare_time(rest: &str, ws: &[Word], i: usize) -> Option<DateMatch> {
+    let (time, k) = read_time(rest, ws, i, true)?;
+    Some(DateMatch { day: None, time: Some(time), part: None, end: ws[k - 1].end })
 }
 
 /// Word `k`, when only a space or a comma (and spaces) separates it from the word before.
@@ -619,7 +629,12 @@ pub fn resolve(m: DateMatch, now: DateTime, o: &Options) -> (DateTime, bool) {
         return (DateTime { year, month, day, hour, minute }, true);
     }
     let (mut hour, minute) = m.time.as_ref().map_or((0, 0), |t| (t.hour, t.minute));
-    if let Some(t) = m.time.as_ref().filter(|t| !t.meridiem) {
+    // "tonight at 12", "midnight tonight": the midnight that ends the day, so the next one's 00:00
+    let late = m.part == Some(Part::Night) && m.time.as_ref().is_some_and(|t| t.hour == 0 || (t.hour == 12 && !t.meridiem));
+    if late {
+        hour = 0;
+    }
+    if let Some(t) = m.time.as_ref().filter(|t| !t.meridiem && !late) {
         let pm = match m.part {
             Some(Part::Morning) => false,
             Some(Part::Afternoon | Part::Evening) => t.hour < 12,
@@ -633,9 +648,9 @@ pub fn resolve(m: DateMatch, now: DateTime, o: &Options) -> (DateTime, bool) {
         }
     }
     let days = match m.day {
-        Some(d) => day_of(d, now, o),
+        Some(d) => day_of(d, now, o) + late as i64,
         // "at 5": today, unless it has passed and the options look forward
-        None if o.forward && (hour, minute) <= (now.hour, now.minute) => today + 1,
+        None if late || (o.forward && (hour, minute) <= (now.hour, now.minute)) => today + 1,
         None => today,
     };
     let (year, month, day) = civil_from_days(days);
@@ -664,7 +679,8 @@ fn day_of(d: Day, now: DateTime, o: &Options) -> i64 {
         }
         Day::EndOfWeek(n) => {
             let end = monday + 7 * n + (o.week_end as i64 + 6).rem_euclid(7);
-            if forward { end.max(today) } else { end }
+            // "end of last week" asks for the past
+            if forward && n >= 0 { end.max(today) } else { end }
         }
         Day::Ordinal(d) => (0..13)
             .map(|k| months_on(now, k))
@@ -688,7 +704,11 @@ fn day_of(d: Day, now: DateTime, o: &Options) -> i64 {
             .map(|y| days_from_civil(y, month, day))
             .find(|&d| d >= today)
             .unwrap_or(today),
-        Day::Month { year, month } => days_from_civil(named(year, month), month, 1),
+        // "in November" said in November is this one, so its 1st has passed: today, looking forward
+        Day::Month { year, month } => {
+            let first = days_from_civil(named(year, month), month, 1);
+            if forward && year.is_none() { first.max(today) } else { first }
+        }
         Day::EndOf { year, month } => {
             let y = named(year, month);
             days_from_civil(y, month, last_day(y, month))

@@ -2,6 +2,32 @@
 use quando::{dates, parse, DateTime, Options, Parsed, SpanKind, Unit};
 use serde_json::{json, Value};
 
+/// Readings that were wrong once, on Friday 2026-11-20 at 14:00: (line, date, title).
+#[test]
+fn fixed() {
+    let now = datetime("2026-11-20T14:00");
+    for (s, date, title) in [
+        // this November's 1st has passed
+        ("dentist in November", "2026-11-20T00:00", "dentist"),
+        ("in November", "2026-11-20T00:00", ""),
+        ("dentist in November 2026", "2026-11-01T00:00", "dentist"),
+        // the midnight that ends tonight
+        ("dentist tonight at 12", "2026-11-21T00:00", "dentist"),
+        ("midnight tonight", "2026-11-21T00:00", ""),
+        ("12 at night", "2026-11-21T00:00", ""),
+        ("tonight at 11", "2026-11-20T23:00", ""),
+        // the repeat says the day, so a bare hour is its time
+        ("standup every monday 9", "2026-11-23T09:00", "standup"),
+        ("gym every day 7", "2026-11-20T19:00", "gym"),
+        // due by the end of a range
+        ("report tomorrow until 5pm", "2026-11-21T17:00", "report"),
+    ] {
+        let p = parse(s, now, &[]);
+        assert_eq!(p.date, Some(datetime(date)), "{s}");
+        assert_eq!(p.title, title, "{s}");
+    }
+}
+
 /// `dates` finds every date in free text; the default options let dates fall in the past, `todo()` reads as `parse` does.
 #[test]
 fn options() {
@@ -29,6 +55,8 @@ fn options() {
     let friday = Options { week_end: 5, ..Options::todo() };
     assert_eq!(found("end of this week", &friday)[0].1, datetime("2026-11-20T00:00"));
     assert_eq!(found("end of next week", &friday)[0].1, datetime("2026-11-27T00:00"));
+    // "last" asks for the past, even looking forward
+    assert_eq!(found("last day of last week", &Options::todo())[0].1, datetime("2026-11-15T00:00"));
     // already behind on a Saturday: yesterday, or today looking forward
     let saturday = datetime("2026-11-21T10:00");
     assert_eq!(dates("end of week", saturday, &Options { week_end: 5, ..general })[0].date, datetime("2026-11-20T00:00"));

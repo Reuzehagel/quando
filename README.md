@@ -39,9 +39,9 @@ As `parse` reads it, with `Options::todo()`; the options above change only what 
 - Moments: `now`, `in an hour`, `in half an hour`, `in 2h`, `within 20 minutes`, `+15min`, `in 1 day 2 hours`, `in 1d, 2hr, and 5min`: from now, to the minute. An amount needs `in`, `within`, `after`, `+`, `later`, `ago` or `from now`: "boil eggs 10 minutes" stays text.
 - Ordinal words: `May eighth`, `May twenty-fourth`, `the twenty-fourth of May`. Only beside a month: "read the second half" stays text.
 - Times: `at 5`, `5pm`, `10:30 am`, `15:30`, `05:30`, `at 12.30`, `noon`, `midnight`, and a bare hour after a day (`fri 9`). A bare 1 to 7 is the afternoon; `5am` and `05:30` mean what they say. A time on its own is today, or tomorrow once it has passed.
-- Parts of the day: `tomorrow morning`, `6 in the morning`, `11 at night`, `11 tonight`, `this afternoon at 3`.
+- Parts of the day: `tomorrow morning`, `6 in the morning`, `11 at night`, `11 tonight`, `this afternoon at 3`. `tonight at 12` and `midnight tonight` are the midnight that ends today.
 - Parts join with spaces, commas, `at`, `on`, `of`, `by`, `before`, `after`: `Tuesday, 10 January`, `tomorrow by 5pm`, `at midnight on 12th August`. A leading `on`, `by` or `in` joins the date, so "dentist on friday" is titled "dentist" (chrono leaves it out; the benchmark counts that as agreeing).
-- Repeats: `daily`, `weekly`, `monthly`, `yearly`, `every monday`, `every other week`, `every 3 days`, `every weekday`, and `after done`. A repeat with only a time starts on a day it allows.
+- Repeats: `daily`, `weekly`, `monthly`, `yearly`, `every monday`, `every other week`, `every 3 days`, `every weekday`, and `after done`. A repeat with only a time starts on a day it allows, and takes a bare hour: `every monday 9`.
 - Markers: `#list`, `@tag`, `!` to `!!!`.
 
 ## The tests
