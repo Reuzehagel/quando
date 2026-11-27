@@ -2,6 +2,11 @@
 //! [`parse`] reads one todo line ("dentist fri 9 #health") as a title, a date, a list, and the spans an editor
 //! highlights while you type.
 
+// The README's example runs as a doctest, so it can't go stale.
+#[cfg(doctest)]
+#[doc = include_str!("../README.md")]
+struct ReadmeDoctests;
+
 mod calendar;
 mod date;
 mod todo;
