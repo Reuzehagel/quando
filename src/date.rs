@@ -161,12 +161,12 @@ fn phrase(t: &Text, i: usize, o: &Options) -> Option<DateMatch> {
         (m.time, m.end, after) = (Some(tm), t[k - 1].end, k);
     }
     // a range is its start, and the span runs to its end: "monday - friday", "10pm to 2am"; after a time, a bare
-    // hour ends one: "1pm-3"
+    // hour ends one, but only with no word after it: "1pm-3", not "5pm - 3 kids"
     // not into a number either: "at 6.5 kilograms", "4/13/1"
     let into_number = |end: usize| matches!(&b[end..], [mark, digit, ..] if b"/-.:".contains(mark) && digit.is_ascii_digit());
     let to = range_end(t, after).and_then(|k| {
         phrase(t, k, o).or_else(|| {
-            let (time, e) = read_time(t, k, true).filter(|&(_, e)| m.time.is_some() && !counted(t, e) && !into_number(t[e - 1].end))?;
+            let (time, e) = read_time(t, k, true).filter(|&(_, e)| m.time.is_some() && t.joined(e).is_none() && !counted(t, e) && !into_number(t[e - 1].end))?;
             Some(DateMatch { day: None, time: Some(time), part: None, start: t[k].start, end: t[e - 1].end })
         })
     });

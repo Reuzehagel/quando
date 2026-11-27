@@ -84,7 +84,7 @@ The readings below are `parse`'s, with `Options::todo()`. The options above chan
   - The separator is a dash, `to`, `until`, `till` or `through`.
   - The date is the start, and the span runs to the end. The start borrows a year, a day or a time that only the end gives: `tomorrow until 5pm` is tomorrow at 17:00.
   - The end must be a date itself, so "call monday to confirm" keeps "to confirm" in its title. A number that counts something (`nov 27 - 30 euro`) is no range's end.
-  - Time ranges: `8 - 11pm`, `1pm-3`, `12-3pm`, `between 3:30-4:30pm`, `10 - 11 at night`. A bare start takes the end's half of the day, unless it is the later hour: `11-3pm` starts at 11:00. A leading `between` goes with the date.
+  - Time ranges: `8 - 11pm`, `1pm-3`, `12-3pm`, `between 3:30-4:30pm`, `10 - 11 at night`. A bare start takes the end's half of the day, unless it is the later hour: `11-3pm` starts at 11:00. A bare end hour (`1pm-3`) needs no word after it, so "bring 5pm - 3 kids" keeps "- 3 kids". A leading `between` goes with the date.
 - **Relative:** `in 3 days`, `in five days`, `in a week`, `in 3 months`, `next month`, `next year`, `next 2 weeks`, `2 days later`, `3w later`, `3 weeks from now`, `after a year`, `5 days ago`, `in a few days` (3), `in a couple of weeks`.
   - `next week` is next Monday, like a date picker's button.
   - A month on keeps the day of the month, clamped: a month on from 31 January is 28 February.

@@ -45,6 +45,8 @@ fn fixed() {
         ("shift 11-3am", "2026-11-20T23:00", "shift"),
         ("timeoff monday 7 to 9am", "2026-11-23T07:00", "timeoff"),
         ("bring 5pm - 3 people", "2026-11-20T17:00", "bring - 3 people"),
+        ("bring 5pm - 3 kids", "2026-11-20T17:00", "bring - 3 kids"),
+        ("bring 5pm - 3 kids @home", "2026-11-20T17:00", "bring - 3 kids"),
         // behind us
         ("deadline was last night", "2026-11-19T00:00", "deadline was"),
         ("trip last weekend", "2026-11-14T00:00", "trip"),
