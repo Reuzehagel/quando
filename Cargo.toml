@@ -5,6 +5,7 @@ edition = "2024"
 license = "MIT"
 description = "Natural-language date parser for English: every date in a sentence, or a todo line as title, date, repeats and markers, with spans."
 repository = "https://github.com/Reuzehagel/quando"
+include = ["src/**", "README.md", "LICENSE"]
 
 [dependencies]
 
