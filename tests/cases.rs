@@ -1,10 +1,10 @@
-// Runs every case in cases.json and fails with a scoreboard until all of them pass.
+// Runs tests/cases.json (parity with OpenTodo) and tests/quando.json (our own); each fails with a scoreboard.
 use quando::{parse, DateTime, Parsed, SpanKind, Unit};
 use serde_json::{json, Value};
 
 fn datetime(s: &str) -> DateTime {
     let n = |r: std::ops::Range<usize>| s[r].parse::<i32>().unwrap();
-    DateTime { year: n(0..4) as i32, month: n(5..7) as u8, day: n(8..10) as u8, hour: n(11..13) as u8, minute: n(14..16) as u8 }
+    DateTime { year: n(0..4), month: n(5..7) as u8, day: n(8..10) as u8, hour: n(11..13) as u8, minute: n(14..16) as u8 }
 }
 
 /// The same shape as the `want` objects in cases.json.
@@ -28,9 +28,33 @@ fn to_json(p: &Parsed) -> Value {
     })
 }
 
+/// What OpenTodo's TypeScript parser returns: quando matches it.
 #[test]
-fn cases() {
-    let file: Value = serde_json::from_str(include_str!("cases.json")).unwrap();
+fn opentodo() {
+    run(include_str!("cases.json"))
+}
+
+/// quando's own: phrases OpenTodo doesn't test, or reads differently.
+#[test]
+fn quando() {
+    run(include_str!("quando.json"))
+}
+
+/// Anything typed gives an answer, never a panic: spans land on char boundaries whatever the bytes.
+#[test]
+fn never_panics() {
+    let now = datetime("2026-11-20T14:00");
+    for s in ["", " ", "#", "@", "!!!!", "at", "at at 5", "every", "every other", "in 3", "3/", "/12", "31/2/2026", "nov", "29 feb 2027",
+        "every 99999999999 days", "at 99", "25:00", "12am", "0pm", "ünïcödé #lïst @tâg ! morgen", "日本語 #リスト 明日\u{3000}!!", "tomorrow’s", "a\u{3000}!!\u{3000}b"] {
+        let p = parse(s, now, &[]);
+        for sp in &p.spans {
+            assert!(s.is_char_boundary(sp.start) && s.is_char_boundary(sp.end), "{s:?}");
+        }
+    }
+}
+
+fn run(json: &str) {
+    let file: Value = serde_json::from_str(json).unwrap();
     let now = datetime(file["now"].as_str().unwrap());
     let cases = file["cases"].as_array().unwrap();
     let mut failed = Vec::new();

@@ -1,0 +1,13 @@
+{
+  "now": "2026-11-20T14:00",
+  "cases": [
+    { "input": "dentist 27th nov 2027", "want": { "title": "dentist", "date": "2027-11-27", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 8, "end": 21, "kind": "date" }] } },
+    { "input": "call bank 5pm", "want": { "title": "call bank", "date": "2026-11-20T17:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 10, "end": 13, "kind": "date" }] } },
+    { "input": "call bank 10:30 am", "want": { "title": "call bank", "date": "2026-11-21T10:30", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 10, "end": 18, "kind": "date" }] } },
+    { "input": "call bank at 5 tomorrow", "want": { "title": "call bank", "date": "2026-11-21T17:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 10, "end": 23, "kind": "date" }] } },
+    { "input": "fri 5:30", "want": { "title": "", "date": "2026-11-27T17:30", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 0, "end": 8, "kind": "date" }] } },
+    { "input": "leap 29 feb", "want": { "title": "leap", "date": "2028-02-29", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 5, "end": 11, "kind": "date" }] } },
+    { "input": "in 2 weeks", "want": { "title": "", "date": "2026-12-04", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 0, "end": 10, "kind": "date" }] } },
+    { "input": "pay 31/2", "want": { "title": "pay 31/2", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [] } }
+  ]
+}
