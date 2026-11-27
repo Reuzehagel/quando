@@ -319,13 +319,19 @@ fn read_day_any(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
     match w {
         "today" => return Some((Day::InDays(0), i + 1)),
         "tomorrow" => return Some((Day::InDays(1), i + 1)),
-        "in" if spaced_to(i + 1) && spaced_to(i + 2) => return Some((ahead(number(at(i + 1)?, 3)? as i64, at(i + 2)?)?, i + 3)),
-        // "next week" is a week from today, as "in 1 week"
-        "next" if spaced_to(i + 1) => {
-            if let Some(d) = ahead(1, at(i + 1)?).filter(|_| at(i + 1) != Some("day")) {
-                return Some((d, i + 2));
-            }
+        "in" if spaced_to(i + 1) && spaced_to(i + 2) => {
+            let n = match at(i + 1)? {
+                "a" | "an" => 1,
+                w => number(w, 3)? as i64,
+            };
+            return Some((ahead(n, at(i + 2)?)?, i + 3));
         }
+        // "next week" is next Monday (on a Sunday, tomorrow); "in a week" is seven days
+        "next" if spaced_to(i + 1) => match at(i + 1)? {
+            "week" => return Some((Day::Weekday(1), i + 2)),
+            "month" | "year" => return Some((ahead(1, at(i + 1)?)?, i + 2)),
+            _ => {}
+        },
         _ => {}
     }
     if let Some(d) = weekday(w) {
