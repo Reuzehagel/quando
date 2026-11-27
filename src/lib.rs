@@ -250,6 +250,8 @@ enum Day {
     InDays(i64),
     /// The same day of the month, clamped: a month on from 31 Jan is 28 Feb.
     InMonths(i64),
+    /// "in an hour": a moment, so it carries its own time.
+    InMinutes(i64),
 }
 
 /// "in 3 months", "next year": a count and a unit.
@@ -259,6 +261,8 @@ fn ahead(n: i64, unit: &str) -> Option<Day> {
         "week" | "weeks" => Day::InDays(7 * n),
         "month" | "months" => Day::InMonths(n),
         "year" | "years" => Day::InMonths(12 * n),
+        "hour" | "hours" | "hr" | "hrs" => Day::InMinutes(60 * n),
+        "minute" | "minutes" | "min" | "mins" => Day::InMinutes(n),
         _ => return None,
     })
 }
@@ -282,8 +286,9 @@ struct DateMatch {
 fn read_date(rest: &str, ws: &[Word], i: usize) -> Option<DateMatch> {
     let then = |j: usize| (j < ws.len() && spaced(rest, &ws[j - 1], &ws[j])).then_some(j);
     if let Some((day, j)) = read_day(rest, ws, i) {
-        // after a day, a bare hour is a time: "fri 9"
-        if let Some((time, k)) = then(j).and_then(|j| read_time(rest, ws, j, true)) {
+        // after a day, a bare hour is a time: "fri 9"; "in an hour" already has one
+        let time = then(j).filter(|_| !matches!(day, Day::InMinutes(_))).and_then(|j| read_time(rest, ws, j, true));
+        if let Some((time, k)) = time {
             return Some(DateMatch { day: Some(day), time: Some(time), end: ws[k - 1].end });
         }
         return Some(DateMatch { day: Some(day), time: None, end: ws[j - 1].end });
@@ -329,7 +334,7 @@ fn read_day_any(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
         // "next week" is next Monday (on a Sunday, tomorrow); "in a week" is seven days
         "next" if spaced_to(i + 1) => match at(i + 1)? {
             "week" => return Some((Day::Weekday(1), i + 2)),
-            "month" | "year" => return Some((ahead(1, at(i + 1)?)?, i + 2)),
+            "month" | "year" | "hour" => return Some((ahead(1, at(i + 1)?)?, i + 2)),
             _ => {}
         },
         _ => {}
@@ -406,6 +411,12 @@ fn possessive(after: &str) -> bool {
 /// The phrase as a moment, and whether it has a time.
 fn resolve(m: DateMatch, now: DateTime) -> (DateTime, bool) {
     let today = days_from_civil(now.year, now.month, now.day);
+    if let Some(Day::InMinutes(n)) = m.day {
+        let at = today * 1440 + now.hour as i64 * 60 + now.minute as i64 + n;
+        let (year, month, day) = calendar::civil_from_days(at.div_euclid(1440));
+        let (hour, minute) = ((at.rem_euclid(1440) / 60) as u8, (at.rem_euclid(60)) as u8);
+        return (DateTime { year, month, day, hour, minute }, true);
+    }
     let (mut hour, minute) = m.time.as_ref().map_or((0, 0), |t| (t.hour, t.minute));
     // A bare "5" is 17:00, since nobody plans tasks for 05:00; "5am" and "05:00" mean what they say.
     if m.time.as_ref().is_some_and(|t| !t.meridiem && !t.zero && (1..=7).contains(&t.hour)) {
@@ -413,6 +424,7 @@ fn resolve(m: DateMatch, now: DateTime) -> (DateTime, bool) {
     }
     let days = match m.day {
         Some(Day::InDays(n)) => today + n,
+        Some(Day::InMinutes(_)) => unreachable!("resolved above, with its own time"),
         Some(Day::InMonths(n)) => {
             let months = now.year as i64 * 12 + now.month as i64 - 1 + n;
             let (y, m) = (months.div_euclid(12) as i32, (months.rem_euclid(12) + 1) as u8);
