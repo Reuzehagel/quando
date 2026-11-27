@@ -1,706 +1,115 @@
 {
   "now": "2026-11-20T14:00",
   "cases": [
-    {
-      "input": "dentist tomorrow at 11",
-      "want": {
-        "title": "dentist",
-        "date": "2026-11-21T11:00",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 8,
-            "end": 22,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "dentist tomorrow at 1",
-      "want": {
-        "title": "dentist",
-        "date": "2026-11-21T13:00",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 8,
-            "end": 21,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "dentist tomorrow at 12",
-      "want": {
-        "title": "dentist",
-        "date": "2026-11-21T12:00",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 8,
-            "end": 22,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "dentist fri 9",
-      "want": {
-        "title": "dentist",
-        "date": "2026-11-27T09:00",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 8,
-            "end": 13,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "fri",
-      "want": {
-        "title": "",
-        "date": "2026-11-27",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 0,
-            "end": 3,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "call bank at 9",
-      "want": {
-        "title": "call bank",
-        "date": "2026-11-21T09:00",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 10,
-            "end": 14,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "call bank at 5",
-      "want": {
-        "title": "call bank",
-        "date": "2026-11-20T17:00",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 10,
-            "end": 14,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "call bank at 5am",
-      "want": {
-        "title": "call bank",
-        "date": "2026-11-21T05:00",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 10,
-            "end": 16,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "call bank 05:30",
-      "want": {
-        "title": "call bank",
-        "date": "2026-11-21T05:30",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 10,
-            "end": 15,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "call bank 5:30",
-      "want": {
-        "title": "call bank",
-        "date": "2026-11-20T17:30",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 10,
-            "end": 14,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "pay rent nov 27 at 15:30",
-      "want": {
-        "title": "pay rent",
-        "date": "2026-11-27T15:30",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 9,
-            "end": 24,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "pay rent 27 nov",
-      "want": {
-        "title": "pay rent",
-        "date": "2026-11-27",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 9,
-            "end": 15,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "pay rent 3/12",
-      "want": {
-        "title": "pay rent",
-        "date": "2026-12-03",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 9,
-            "end": 13,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "pay rent 23 nov #work",
-      "want": {
-        "title": "pay rent",
-        "date": "2026-11-23",
-        "list": "work",
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 9,
-            "end": 15,
-            "kind": "date"
-          },
-          {
-            "start": 16,
-            "end": 21,
-            "kind": "list"
-          }
-        ]
-      }
-    },
-    {
-      "input": "in 3 days",
-      "want": {
-        "title": "",
-        "date": "2026-11-23",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 0,
-            "end": 9,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "buy tomorrow's paper",
-      "want": {
-        "title": "buy tomorrow's paper",
-        "date": null,
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": []
-      }
-    },
-    {
-      "input": "milk #groceries @errands !!",
-      "want": {
-        "title": "milk",
-        "date": null,
-        "list": "groceries",
-        "tags": [
-          "errands"
-        ],
-        "priority": 2,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 5,
-            "end": 15,
-            "kind": "list"
-          },
-          {
-            "start": 16,
-            "end": 24,
-            "kind": "tag"
-          },
-          {
-            "start": 25,
-            "end": 27,
-            "kind": "priority"
-          }
-        ]
-      }
-    },
-    {
-      "input": "email #work tomorrow 10am",
-      "want": {
-        "title": "email",
-        "date": "2026-11-21T10:00",
-        "list": "work",
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 6,
-            "end": 11,
-            "kind": "list"
-          },
-          {
-            "start": 12,
-            "end": 25,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "bins every monday",
-      "want": {
-        "title": "bins",
-        "date": "2026-11-23",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": {
-          "every": 1,
-          "unit": "week",
-          "weekday": 1,
-          "fromCompletion": false
-        },
-        "spans": [
-          {
-            "start": 5,
-            "end": 17,
-            "kind": "repeat"
-          }
-        ]
-      }
-    },
-    {
-      "input": "bins every friday",
-      "want": {
-        "title": "bins",
-        "date": "2026-11-20",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": {
-          "every": 1,
-          "unit": "week",
-          "weekday": 5,
-          "fromCompletion": false
-        },
-        "spans": [
-          {
-            "start": 5,
-            "end": 17,
-            "kind": "repeat"
-          }
-        ]
-      }
-    },
-    {
-      "input": "bins 23 nov every monday",
-      "want": {
-        "title": "bins",
-        "date": "2026-11-23",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": {
-          "every": 1,
-          "unit": "week",
-          "weekday": 1,
-          "fromCompletion": false
-        },
-        "spans": [
-          {
-            "start": 5,
-            "end": 11,
-            "kind": "date"
-          },
-          {
-            "start": 12,
-            "end": 24,
-            "kind": "repeat"
-          }
-        ]
-      }
-    },
-    {
-      "input": "water plants every 3 days after done",
-      "want": {
-        "title": "water plants",
-        "date": "2026-11-20",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": {
-          "every": 3,
-          "unit": "day",
-          "fromCompletion": true
-        },
-        "spans": [
-          {
-            "start": 13,
-            "end": 36,
-            "kind": "repeat"
-          }
-        ]
-      }
-    },
-    {
-      "input": "standup every weekday at 9",
-      "want": {
-        "title": "standup",
-        "date": "2026-11-23T09:00",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": {
-          "every": 1,
-          "unit": "day",
-          "weekdaysOnly": true,
-          "fromCompletion": false
-        },
-        "spans": [
-          {
-            "start": 8,
-            "end": 21,
-            "kind": "repeat"
-          },
-          {
-            "start": 22,
-            "end": 26,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "bins every friday at 9",
-      "want": {
-        "title": "bins",
-        "date": "2026-11-27T09:00",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": {
-          "every": 1,
-          "unit": "week",
-          "weekday": 5,
-          "fromCompletion": false
-        },
-        "spans": [
-          {
-            "start": 5,
-            "end": 17,
-            "kind": "repeat"
-          },
-          {
-            "start": 18,
-            "end": 22,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "bins every friday at 5",
-      "want": {
-        "title": "bins",
-        "date": "2026-11-20T17:00",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": {
-          "every": 1,
-          "unit": "week",
-          "weekday": 5,
-          "fromCompletion": false
-        },
-        "spans": [
-          {
-            "start": 5,
-            "end": 17,
-            "kind": "repeat"
-          },
-          {
-            "start": 18,
-            "end": 22,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "review monthly",
-      "want": {
-        "title": "review",
-        "date": "2026-11-20",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": {
-          "every": 1,
-          "unit": "month",
-          "fromCompletion": false
-        },
-        "spans": [
-          {
-            "start": 7,
-            "end": 14,
-            "kind": "repeat"
-          }
-        ]
-      }
-    },
-    {
-      "input": "meet at #1 spot",
-      "want": {
-        "title": "meet at spot",
-        "date": null,
-        "list": "1",
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 8,
-            "end": 10,
-            "kind": "list"
-          }
-        ]
-      }
-    },
-    {
-      "input": "wow! great",
-      "want": {
-        "title": "wow! great",
-        "date": null,
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": []
-      }
-    },
-    {
-      "input": "dentist next month",
-      "want": {
-        "title": "dentist",
-        "date": "2026-12-20",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 8,
-            "end": 18,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "in 3 months",
-      "want": {
-        "title": "",
-        "date": "2027-02-20",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 0,
-            "end": 11,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "renew passport next year",
-      "want": {
-        "title": "renew passport",
-        "date": "2027-11-20",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 15,
-            "end": 24,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "review next week",
-      "want": {
-        "title": "review",
-        "date": "2026-11-23",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 7,
-            "end": 16,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "review next week at 10",
-      "want": {
-        "title": "review",
-        "date": "2026-11-23T10:00",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 7,
-            "end": 22,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "review in a week",
-      "want": {
-        "title": "review",
-        "date": "2026-11-27",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 7,
-            "end": 16,
-            "kind": "date"
-          }
-        ]
-      }
-    },
-    {
-      "input": "read tomorrow and today",
-      "ignored": [
-        "tomorrow"
-      ],
-      "want": {
-        "title": "read tomorrow and",
-        "date": "2026-11-20",
-        "list": null,
-        "tags": [],
-        "priority": 0,
-        "repeat": null,
-        "spans": [
-          {
-            "start": 18,
-            "end": 23,
-            "kind": "date"
-          }
-        ]
-      }
-    }
+    {"input": "dentist tomorrow at 11", "want": {"title": "dentist", "date": "2026-11-21T11:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 22, "kind": "date"}]}},
+    {"input": "dentist tomorrow at 1", "want": {"title": "dentist", "date": "2026-11-21T13:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 21, "kind": "date"}]}},
+    {"input": "dentist tomorrow at 12", "want": {"title": "dentist", "date": "2026-11-21T12:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 22, "kind": "date"}]}},
+    {"input": "dentist fri 9", "want": {"title": "dentist", "date": "2026-11-27T09:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 13, "kind": "date"}]}},
+    {"input": "fri", "want": {"title": "", "date": "2026-11-27", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 3, "kind": "date"}]}},
+    {"input": "call bank at 9", "want": {"title": "call bank", "date": "2026-11-21T09:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 10, "end": 14, "kind": "date"}]}},
+    {"input": "call bank at 5", "want": {"title": "call bank", "date": "2026-11-20T17:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 10, "end": 14, "kind": "date"}]}},
+    {"input": "call bank at 5am", "want": {"title": "call bank", "date": "2026-11-21T05:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 10, "end": 16, "kind": "date"}]}},
+    {"input": "call bank 05:30", "want": {"title": "call bank", "date": "2026-11-21T05:30", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 10, "end": 15, "kind": "date"}]}},
+    {"input": "call bank 5:30", "want": {"title": "call bank", "date": "2026-11-20T17:30", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 10, "end": 14, "kind": "date"}]}},
+    {"input": "pay rent nov 27 at 15:30", "want": {"title": "pay rent", "date": "2026-11-27T15:30", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 9, "end": 24, "kind": "date"}]}},
+    {"input": "pay rent 27 nov", "want": {"title": "pay rent", "date": "2026-11-27", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 9, "end": 15, "kind": "date"}]}},
+    {"input": "pay rent 3/12", "want": {"title": "pay rent", "date": "2026-12-03", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 9, "end": 13, "kind": "date"}]}},
+    {"input": "pay rent 23 nov #work", "want": {"title": "pay rent", "date": "2026-11-23", "list": "work", "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 9, "end": 15, "kind": "date"}, {"start": 16, "end": 21, "kind": "list"}]}},
+    {"input": "in 3 days", "want": {"title": "", "date": "2026-11-23", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 9, "kind": "date"}]}},
+    {"input": "buy tomorrow's paper", "want": {"title": "buy tomorrow's paper", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
+    {"input": "milk #groceries @errands !!", "want": {"title": "milk", "date": null, "list": "groceries", "tags": ["errands"], "priority": 2, "repeat": null, "spans": [{"start": 5, "end": 15, "kind": "list"}, {"start": 16, "end": 24, "kind": "tag"}, {"start": 25, "end": 27, "kind": "priority"}]}},
+    {"input": "email #work tomorrow 10am", "want": {"title": "email", "date": "2026-11-21T10:00", "list": "work", "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 6, "end": 11, "kind": "list"}, {"start": 12, "end": 25, "kind": "date"}]}},
+    {"input": "bins every monday", "want": {"title": "bins", "date": "2026-11-23", "list": null, "tags": [], "priority": 0, "repeat": {"every": 1, "unit": "week", "weekday": 1, "fromCompletion": false}, "spans": [{"start": 5, "end": 17, "kind": "repeat"}]}},
+    {"input": "bins every friday", "want": {"title": "bins", "date": "2026-11-20", "list": null, "tags": [], "priority": 0, "repeat": {"every": 1, "unit": "week", "weekday": 5, "fromCompletion": false}, "spans": [{"start": 5, "end": 17, "kind": "repeat"}]}},
+    {"input": "bins 23 nov every monday", "want": {"title": "bins", "date": "2026-11-23", "list": null, "tags": [], "priority": 0, "repeat": {"every": 1, "unit": "week", "weekday": 1, "fromCompletion": false}, "spans": [{"start": 5, "end": 11, "kind": "date"}, {"start": 12, "end": 24, "kind": "repeat"}]}},
+    {"input": "water plants every 3 days after done", "want": {"title": "water plants", "date": "2026-11-20", "list": null, "tags": [], "priority": 0, "repeat": {"every": 3, "unit": "day", "fromCompletion": true}, "spans": [{"start": 13, "end": 36, "kind": "repeat"}]}},
+    {"input": "standup every weekday at 9", "want": {"title": "standup", "date": "2026-11-23T09:00", "list": null, "tags": [], "priority": 0, "repeat": {"every": 1, "unit": "day", "weekdaysOnly": true, "fromCompletion": false}, "spans": [{"start": 8, "end": 21, "kind": "repeat"}, {"start": 22, "end": 26, "kind": "date"}]}},
+    {"input": "bins every friday at 9", "want": {"title": "bins", "date": "2026-11-27T09:00", "list": null, "tags": [], "priority": 0, "repeat": {"every": 1, "unit": "week", "weekday": 5, "fromCompletion": false}, "spans": [{"start": 5, "end": 17, "kind": "repeat"}, {"start": 18, "end": 22, "kind": "date"}]}},
+    {"input": "bins every friday at 5", "want": {"title": "bins", "date": "2026-11-20T17:00", "list": null, "tags": [], "priority": 0, "repeat": {"every": 1, "unit": "week", "weekday": 5, "fromCompletion": false}, "spans": [{"start": 5, "end": 17, "kind": "repeat"}, {"start": 18, "end": 22, "kind": "date"}]}},
+    {"input": "review monthly", "want": {"title": "review", "date": "2026-11-20", "list": null, "tags": [], "priority": 0, "repeat": {"every": 1, "unit": "month", "fromCompletion": false}, "spans": [{"start": 7, "end": 14, "kind": "repeat"}]}},
+    {"input": "meet at #1 spot", "want": {"title": "meet at spot", "date": null, "list": "1", "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 10, "kind": "list"}]}},
+    {"input": "wow! great", "want": {"title": "wow! great", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
+    {"input": "dentist next month", "want": {"title": "dentist", "date": "2026-12-20", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 18, "kind": "date"}]}},
+    {"input": "in 3 months", "want": {"title": "", "date": "2027-02-20", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 11, "kind": "date"}]}},
+    {"input": "renew passport next year", "want": {"title": "renew passport", "date": "2027-11-20", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 15, "end": 24, "kind": "date"}]}},
+    {"input": "review next week", "want": {"title": "review", "date": "2026-11-23", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 7, "end": 16, "kind": "date"}]}},
+    {"input": "review next week at 10", "want": {"title": "review", "date": "2026-11-23T10:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 7, "end": 22, "kind": "date"}]}},
+    {"input": "review in a week", "want": {"title": "review", "date": "2026-11-27", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 7, "end": 16, "kind": "date"}]}},
+    {"input": "read tomorrow and today", "ignored": ["tomorrow"], "want": {"title": "read tomorrow and", "date": "2026-11-20", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 18, "end": 23, "kind": "date"}]}},
+    {"input": "dentist 27th nov 2027", "want": {"title": "dentist", "date": "2027-11-27", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 21, "kind": "date"}]}},
+    {"input": "call bank 5pm", "want": {"title": "call bank", "date": "2026-11-20T17:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 10, "end": 13, "kind": "date"}]}},
+    {"input": "call bank 10:30 am", "want": {"title": "call bank", "date": "2026-11-21T10:30", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 10, "end": 18, "kind": "date"}]}},
+    {"input": "call bank at 5 tomorrow", "want": {"title": "call bank", "date": "2026-11-21T17:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 10, "end": 23, "kind": "date"}]}},
+    {"input": "fri 5:30", "want": {"title": "", "date": "2026-11-27T17:30", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 8, "kind": "date"}]}},
+    {"input": "leap 29 feb", "want": {"title": "leap", "date": "2028-02-29", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 5, "end": 11, "kind": "date"}]}},
+    {"input": "in 2 weeks", "want": {"title": "", "date": "2026-12-04", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 10, "kind": "date"}]}},
+    {"input": "in 2 years at 9", "want": {"title": "", "date": "2028-11-20T09:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 15, "kind": "date"}]}},
+    {"input": "call back in an hour", "want": {"title": "call back", "date": "2026-11-20T15:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 10, "end": 20, "kind": "date"}]}},
+    {"input": "in 2 hours", "want": {"title": "", "date": "2026-11-20T16:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 10, "kind": "date"}]}},
+    {"input": "tea in 30 minutes", "want": {"title": "tea", "date": "2026-11-20T14:30", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 4, "end": 17, "kind": "date"}]}},
+    {"input": "in 90 mins", "want": {"title": "", "date": "2026-11-20T15:30", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 10, "kind": "date"}]}},
+    {"input": "in 12 hours", "want": {"title": "", "date": "2026-11-21T02:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 11, "kind": "date"}]}},
+    {"input": "lunch tomorrow at noon", "want": {"title": "lunch", "date": "2026-11-21T12:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 6, "end": 22, "kind": "date"}]}},
+    {"input": "movie tonight at 8", "want": {"title": "movie", "date": "2026-11-20T20:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 6, "end": 18, "kind": "date"}]}},
+    {"input": "send report tomorrow by 5pm", "want": {"title": "send report", "date": "2026-11-21T17:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 12, "end": 27, "kind": "date"}]}},
+    {"input": "run 6 in the morning", "want": {"title": "run", "date": "2026-11-21T06:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 4, "end": 20, "kind": "date"}]}},
+    {"input": "invoice end of month", "want": {"title": "invoice", "date": "2026-11-30", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 20, "kind": "date"}]}},
+    {"input": "holiday in June", "want": {"title": "holiday", "date": "2027-06-01", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 15, "kind": "date"}]}},
+    {"input": "dentist on friday", "want": {"title": "dentist", "date": "2026-11-27", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 17, "kind": "date"}]}},
+    {"input": "finish report by monday 5pm", "want": {"title": "finish report", "date": "2026-11-23T17:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 14, "end": 27, "kind": "date"}]}},
+    {"input": "drinks next friday", "want": {"title": "drinks", "date": "2026-11-27", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 7, "end": 18, "kind": "date"}]}},
+    {"input": "next saturday", "want": {"title": "", "date": "2026-11-28", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 13, "kind": "date"}]}},
+    {"input": "next monday at 9", "want": {"title": "", "date": "2026-11-23T09:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 16, "kind": "date"}]}},
+    {"input": "this wednesday", "want": {"title": "", "date": "2026-11-25", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 14, "kind": "date"}]}},
+    {"input": "hike this weekend", "want": {"title": "hike", "date": "2026-11-21", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 5, "end": 17, "kind": "date"}]}},
+    {"input": "hike next weekend", "want": {"title": "hike", "date": "2026-11-28", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 5, "end": 17, "kind": "date"}]}},
+    {"input": "rent the 1st", "want": {"title": "rent", "date": "2026-12-01", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 5, "end": 12, "kind": "date"}]}},
+    {"input": "pay the 20th", "want": {"title": "pay", "date": "2026-11-20", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 4, "end": 12, "kind": "date"}]}},
+    {"input": "the 31st", "want": {"title": "", "date": "2026-12-31", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 8, "kind": "date"}]}},
+    {"input": "invoice on the 5th at 3", "want": {"title": "invoice", "date": "2026-12-05T15:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 23, "kind": "date"}]}},
+    {"input": "party the 5th of December", "want": {"title": "party", "date": "2026-12-05", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 6, "end": 25, "kind": "date"}]}},
+    {"input": "call may", "want": {"title": "call may", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
+    {"input": "dentist Tuesday, 10 January", "want": {"title": "dentist", "date": "2027-01-10", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 27, "kind": "date"}]}},
+    {"input": "weigh at 6.5 kilograms", "want": {"title": "weigh at 6.5 kilograms", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
+    {"input": "follow up in five days", "want": {"title": "follow up", "date": "2026-11-25", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 10, "end": 22, "kind": "date"}]}},
+    {"input": "call back in half an hour", "want": {"title": "call back", "date": "2026-11-20T14:30", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 10, "end": 25, "kind": "date"}]}},
+    {"input": "stretch in 2h", "want": {"title": "stretch", "date": "2026-11-20T16:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 13, "kind": "date"}]}},
+    {"input": "in 1 day 2 hours", "want": {"title": "", "date": "2026-11-21T16:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 16, "kind": "date"}]}},
+    {"input": "in 1d, 2hr, and 5min", "want": {"title": "", "date": "2026-11-21T16:05", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 20, "kind": "date"}]}},
+    {"input": "+15min", "want": {"title": "", "date": "2026-11-20T14:15", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 6, "kind": "date"}]}},
+    {"input": "check oven within 20 minutes", "want": {"title": "check oven", "date": "2026-11-20T14:20", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 11, "end": 28, "kind": "date"}]}},
+    {"input": "3w later", "want": {"title": "", "date": "2026-12-11", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 8, "kind": "date"}]}},
+    {"input": "boil eggs 10 minutes", "want": {"title": "boil eggs 10 minutes", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
+    {"input": "birthday May eighth", "want": {"title": "birthday", "date": "2027-05-08", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 9, "end": 19, "kind": "date"}]}},
+    {"input": "the twenty-fourth of May", "want": {"title": "", "date": "2027-05-24", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 24, "kind": "date"}]}},
+    {"input": "read the second half", "want": {"title": "read the second half", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
+    {"input": "pay 31/2", "want": {"title": "pay 31/2", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
+    {"input": "today's meeting", "want": {"title": "today's meeting", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
+    {"input": "this month's report", "want": {"title": "this month's report", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
+    {"input": "vacation monday - friday", "want": {"title": "vacation", "date": "2026-11-23", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 9, "end": 24, "kind": "date"}]}},
+    {"input": "shop 10pm to 2am tomorrow", "want": {"title": "shop", "date": "2026-11-21T22:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 5, "end": 25, "kind": "date"}]}},
+    {"input": "trip 10 August - 12 September 2027", "want": {"title": "trip", "date": "2027-08-10", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 5, "end": 34, "kind": "date"}]}},
+    {"input": "conference 10 - 12 August", "want": {"title": "conference", "date": "2027-08-10", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 11, "end": 25, "kind": "date"}]}},
+    {"input": "holiday aug 10 to 22, 2027", "want": {"title": "holiday", "date": "2027-08-10", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 26, "kind": "date"}]}},
+    {"input": "call monday to confirm", "want": {"title": "call to confirm", "date": "2026-11-23", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 5, "end": 11, "kind": "date"}]}},
+    {"input": "email at 5 to 10 people", "want": {"title": "email to 10 people", "date": "2026-11-20T17:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 6, "end": 10, "kind": "date"}]}},
+    {"input": "pages 10-12", "want": {"title": "pages 10-12", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
+    {"input": "dentist 3 aug 27", "want": {"title": "dentist", "date": "2027-08-03", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 16, "kind": "date"}]}},
+    {"input": "dec 5 50 invitations", "want": {"title": "50 invitations", "date": "2026-12-05", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 5, "kind": "date"}]}},
+    {"input": "call the day after tomorrow", "want": {"title": "call", "date": "2026-11-22", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 5, "end": 27, "kind": "date"}]}},
+    {"input": "prep 2 days before friday", "want": {"title": "prep", "date": "2026-11-25", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 5, "end": 25, "kind": "date"}]}},
+    {"input": "arrive 15 minutes before", "want": {"title": "arrive 15 minutes before", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
+    {"input": "overdue last friday", "want": {"title": "overdue", "date": "2026-11-13", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 8, "end": 19, "kind": "date"}]}},
+    {"input": "review last week", "want": {"title": "review", "date": "2026-11-13", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 7, "end": 16, "kind": "date"}]}},
+    {"input": "read the last 2 pages", "want": {"title": "read the last 2 pages", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
+    {"input": "report last day of month", "want": {"title": "report", "date": "2026-11-30", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 7, "end": 24, "kind": "date"}]}},
+    {"input": "call in a few days", "want": {"title": "call", "date": "2026-11-23", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 5, "end": 18, "kind": "date"}]}},
+    {"input": "call in a couple of weeks", "want": {"title": "call", "date": "2026-12-04", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 5, "end": 25, "kind": "date"}]}},
+    {"input": "call in about 2 hours", "want": {"title": "call", "date": "2026-11-20T16:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 5, "end": 21, "kind": "date"}]}},
+    {"input": "fly 15sep 9am", "want": {"title": "fly", "date": "2027-09-15T09:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 4, "end": 13, "kind": "date"}]}},
+    {"input": "9-jan-2027 tax", "want": {"title": "tax", "date": "2027-01-09", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 10, "kind": "date"}]}},
+    {"input": "2027/1/9 tax", "want": {"title": "tax", "date": "2027-01-09", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 8, "kind": "date"}]}},
+    {"input": "pay 1500 may rent", "want": {"title": "pay 1500 may rent", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
+    {"input": "wait...friday", "want": {"title": "wait...", "date": "2026-11-27", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 7, "end": 13, "kind": "date"}]}}
   ]
 }

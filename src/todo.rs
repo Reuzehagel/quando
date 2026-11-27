@@ -1,8 +1,8 @@
 // The todo layer: a typed line as a task. The title is what's left once the date, repeat, `#list`, `@tag` and `!` are read.
 use crate::calendar::{civil_from_days, days_from_civil, weekday_of};
-use crate::date::{read_bare_time, read_date, resolve};
-use crate::words::{spaced, weekday, words, Word};
-use crate::{possessive, DateTime, Options, Span, SpanKind};
+use crate::date::{calendar_unit, read_date, resolve};
+use crate::words::{weekday, Text};
+use crate::{DateTime, Options, Span, SpanKind};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Unit {
@@ -21,14 +21,19 @@ pub struct Repeat {
     pub weekdays_only: bool,
     /// "after done": the next date counts from completing it, not from the last date.
     pub from_completion: bool,
-    /// Day of the month a monthly or yearly repeat was set on, so a 31st clamped to the 28th goes back to the 31st.
-    pub day: Option<u8>,
 }
 
 impl Repeat {
     /// Whether the repeat can fall on this weekday (0 is Sunday).
     pub fn allows(&self, weekday: u8) -> bool {
         self.weekday.is_none_or(|d| d == weekday) && !(self.weekdays_only && (weekday == 0 || weekday == 6))
+    }
+
+    /// The first day the repeat can fall on, from `d`'s day on.
+    fn first_from(&self, d: DateTime) -> DateTime {
+        let days = days_from_civil(d.year, d.month, d.day);
+        let (year, month, day) = civil_from_days((days..days + 7).find(|&x| self.allows(weekday_of(x))).unwrap_or(days));
+        DateTime { year, month, day, ..d }
     }
 }
 
@@ -73,50 +78,41 @@ pub fn parse_with(text: &str, now: DateTime, ignored: &[&str], o: &Options) -> P
     }
 
     let (mut repeat, mut repeat_end) = (None, None);
-    let ws = words(&line.rest);
-    for i in 0..ws.len() {
-        if let Some((end, r)) = read_repeat(&line.rest, &ws, i)
-            && line.take(ws[i].start, end, SpanKind::Repeat) {
-                (repeat, repeat_end) = (Some(r), Some(end));
-                break;
-            }
+    let rest = line.rest.clone();
+    let t = Text::new(&rest);
+    for i in 0..t.len() {
+        if let Some((end, r)) = read_repeat(&t, i)
+            && line.take(t[i].start, end, SpanKind::Repeat)
+        {
+            (repeat, repeat_end) = (Some(r), Some(end));
+            break;
+        }
     }
 
     let mut date = None;
-    let ws = words(&line.rest);
-    for i in 0..ws.len() {
+    let rest = line.rest.clone();
+    let t = Text::new(&rest);
+    for i in 0..t.len() {
         // right after a repeat, a bare hour is its time: "every monday 9"
-        let after_repeat = repeat_end.is_some_and(|e| e < ws[i].start && line.rest[e..ws[i].start].trim().is_empty());
-        let Some(m) = read_date(&line.rest, &ws, i, o).or_else(|| after_repeat.then(|| read_bare_time(&line.rest, &ws, i)).flatten()) else { continue };
+        let after_repeat = repeat_end.is_some_and(|e| e < t[i].start && rest[e..t[i].start].trim().is_empty());
+        let Some(m) = read_date(&t, i, o, after_repeat) else { continue };
         // "dentist on friday" is a dentist: the word leading into the date goes with it
-        let lead = i > 0 && matches!(ws[i - 1].lower.as_str(), "on" | "by" | "in") && spaced(&line.rest, &ws[i - 1], &ws[i]);
-        let start = if lead { ws[i - 1].start } else { ws[i].start };
-        // "+15min" keeps its sign
-        let start = if line.rest[..start].ends_with('+') { start - 1 } else { start };
-        if possessive(&text[m.end..]) || !line.take(start, m.end, SpanKind::Date) {
+        let lead = t.spaced(i) && matches!(t.at(i - 1), Some("on" | "by" | "in"));
+        let start = if lead { t[i - 1].start } else { m.start };
+        if !line.take(start, m.end, SpanKind::Date) {
             continue;
         }
-        let time_only = m.day.is_none();
-        let (mut d, has_time) = resolve(m, now, o);
+        let time_only = m.time_only();
+        let (d, has_time) = resolve(m, now, o);
         // "every weekday at 9" on a Friday afternoon starts Monday, not Saturday
-        if let Some(r) = repeat.as_ref().filter(|_| time_only) {
-            let mut days = days_from_civil(d.year, d.month, d.day);
-            for _ in 0..7 {
-                if r.allows(weekday_of(days)) {
-                    break;
-                }
-                days += 1;
-            }
-            (d.year, d.month, d.day) = civil_from_days(days);
-        }
+        let d = repeat.as_ref().filter(|_| time_only).map_or(d, |r| r.first_from(d));
         date = Some((d, has_time));
         break;
     }
     let has_time = date.is_some_and(|(_, t)| t);
-    let mut date = date.map(|(d, _)| d);
-    if date.is_none() {
-        date = repeat.as_ref().map(|r| first_occurrence(r, now));
-    }
+    // with a repeat and no date: the first day from today it can fall on ("every friday" on a Friday starts today)
+    let midnight = DateTime { hour: 0, minute: 0, ..now };
+    let date = date.map(|(d, _)| d).or_else(|| repeat.as_ref().map(|r| r.first_from(midnight)));
 
     let mut spans = line.spans;
     spans.sort_by_key(|s| s.start);
@@ -178,16 +174,16 @@ fn bangs(text: &str) -> Vec<(usize, usize)> {
 }
 
 /// "every monday", "every 3 days after done", "every other week", "daily": the end of the phrase and its rule.
-fn read_repeat(rest: &str, ws: &[Word], i: usize) -> Option<(usize, Repeat)> {
-    let plain = |every, unit| Repeat { every, unit, weekday: None, weekdays_only: false, from_completion: false, day: None };
-    let (mut r, mut last) = match ws[i].lower.as_str() {
+fn read_repeat(t: &Text, i: usize) -> Option<(usize, Repeat)> {
+    let plain = |every, unit| Repeat { every, unit, weekday: None, weekdays_only: false, from_completion: false };
+    let (mut r, mut last) = match t.at(i)? {
         "daily" => (plain(1, Unit::Day), i),
         "weekly" => (plain(1, Unit::Week), i),
         "monthly" => (plain(1, Unit::Month), i),
         "yearly" => (plain(1, Unit::Year), i),
         "every" => {
             let mut j = i + 1;
-            let next = |j: usize| (j < ws.len() && spaced(rest, &ws[j - 1], &ws[j])).then(|| ws[j].lower.as_str());
+            let next = |j: usize| t.spaced(j).then(|| t.at(j)).flatten();
             let (mut n, mut other) = (1, false);
             match next(j)? {
                 "other" => (other, j) = (true, j + 1),
@@ -196,34 +192,25 @@ fn read_repeat(rest: &str, ws: &[Word], i: usize) -> Option<(usize, Repeat)> {
             }
             let w = next(j)?;
             let single = w.strip_suffix('s').unwrap_or(w);
-            let unit = |u| plain(if other { 2 } else { n }, u);
-            let r = match single {
-                "day" => unit(Unit::Day),
-                "week" => unit(Unit::Week),
-                "month" => unit(Unit::Month),
-                "year" => unit(Unit::Year),
-                "weekday" => Repeat { weekdays_only: true, ..plain(1, Unit::Day) },
-                _ => {
-                    let d = weekday(w).or_else(|| weekday(single))?;
-                    Repeat { weekday: Some(d), ..plain(if other { 2 } else { 1 }, Unit::Week) }
-                }
+            let every = |u| plain(if other { 2 } else { n }, u);
+            let unit = calendar_unit(w).map(|u| match u {
+                (0, 1) => Unit::Day,
+                (0, 7) => Unit::Week,
+                (1, 0) => Unit::Month,
+                _ => Unit::Year,
+            });
+            let r = match (single, unit) {
+                ("weekday", _) => Repeat { weekdays_only: true, ..plain(1, Unit::Day) },
+                (_, Some(u)) => every(u),
+                _ => Repeat { weekday: Some(weekday(w).or_else(|| weekday(single))?), ..every(Unit::Week) },
             };
             (r, j)
         }
         _ => return None,
     };
-    let after = |k: usize, word: &str| k < ws.len() && spaced(rest, &ws[k - 1], &ws[k]) && ws[k].lower == word;
-    if after(last + 1, "after") && after(last + 2, "done") {
+    if t.is(last + 1, "after") && t.is(last + 2, "done") {
         r.from_completion = true;
         last += 2;
     }
-    Some((ws[last].end, r))
-}
-
-/// With a repeat and no date: today, or the repeat's next weekday ("every friday" on a Friday starts today).
-fn first_occurrence(r: &Repeat, now: DateTime) -> DateTime {
-    let today = days_from_civil(now.year, now.month, now.day);
-    let days = today + r.weekday.map_or(0, |d| (d as i64 - weekday_of(today) as i64).rem_euclid(7));
-    let (year, month, day) = civil_from_days(days);
-    DateTime { year, month, day, hour: 0, minute: 0 }
+    Some((t[last].end, r))
 }

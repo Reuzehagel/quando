@@ -9,7 +9,7 @@ mod words;
 
 use date::{read_date, resolve};
 pub use todo::{parse, parse_with, Parsed, Repeat, Unit};
-use words::words;
+use words::Text;
 
 /// A wall-clock time with no zone: quando reads the line in the zone `now` is in.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -71,28 +71,20 @@ pub struct Found {
 
 /// Every date in `text`, in order, as of `now`.
 pub fn dates(text: &str, now: DateTime, o: &Options) -> Vec<Found> {
-    let ws = words(text);
+    let t = Text::new(text);
     let mut found = Vec::new();
     let mut i = 0;
-    while i < ws.len() {
-        let Some(m) = read_date(text, &ws, i, o).filter(|m| !possessive(&text[m.end..])) else {
+    while i < t.len() {
+        let Some(m) = read_date(&t, i, o, false) else {
             i += 1;
             continue;
         };
-        // "+15min" keeps its sign
-        let start = ws[i].start - text[..ws[i].start].ends_with('+') as usize;
-        let end = m.end;
+        let (start, end) = (m.start, m.end);
         let (date, has_time) = resolve(m, now, o);
         found.push(Found { start, end, date, has_time });
-        while i < ws.len() && ws[i].start < end {
+        while i < t.len() && t[i].start < end {
             i += 1;
         }
     }
     found
-}
-
-/// "tomorrow's paper" is a title, not a date.
-fn possessive(after: &str) -> bool {
-    let s = after.strip_prefix("'s").or_else(|| after.strip_prefix("’s"));
-    s.is_some_and(|s| !s.starts_with(|c: char| c.is_alphanumeric() || c == '_'))
 }

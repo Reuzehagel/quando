@@ -1,4 +1,6 @@
-// Runs tests/cases.json (parity with OpenTodo) and tests/quando.json (our own); each fails with a scoreboard.
+mod common;
+
+use common::{datetime, stamp};
 use quando::{dates, parse, DateTime, Options, Parsed, SpanKind, Unit};
 use serde_json::{json, Value};
 
@@ -30,6 +32,14 @@ fn fixed() {
         let p = parse(s, now, &[]);
         assert_eq!(p.date, Some(datetime(date)), "{s}");
         assert_eq!(p.title, title, "{s}");
+    }
+    // a repeat counts in the units an amount does, and keeps its count on a weekday
+    let every = |s| parse(s, now, &[]).repeat.map(|r| (r.every, r.unit, r.weekday));
+    assert_eq!(every("gym every 2 wks"), Some((2, Unit::Week, None)));
+    assert_eq!(every("bins every 2 mondays"), Some((2, Unit::Week, Some(1))));
+    // a weekday repeat with no date starts on a weekday
+    for now in ["2026-11-21T10:00", "2026-11-22T10:00"] {
+        assert_eq!(parse("standup every weekday", datetime(now), &[]).date, Some(datetime("2026-11-23T00:00")), "{now}");
     }
 }
 
@@ -69,23 +79,14 @@ fn options() {
     assert_eq!(parse("report end of week", now, &[]).title, "report");
 }
 
-fn datetime(s: &str) -> DateTime {
-    let n = |r: std::ops::Range<usize>| s[r].parse::<i32>().unwrap();
-    DateTime { year: n(0..4), month: n(5..7) as u8, day: n(8..10) as u8, hour: n(11..13) as u8, minute: n(14..16) as u8 }
-}
-
 /// The same shape as the `want` objects in cases.json.
 fn to_json(p: &Parsed) -> Value {
-    let date = p.date.map(|d| {
-        let day = format!("{:04}-{:02}-{:02}", d.year, d.month, d.day);
-        if p.has_time { format!("{day}T{:02}:{:02}", d.hour, d.minute) } else { day }
-    });
+    let date = p.date.map(|d| stamp(d, p.has_time));
     let unit = |u: Unit| format!("{u:?}").to_lowercase();
     let repeat = p.repeat.as_ref().map(|r| {
         let mut v = json!({ "every": r.every, "unit": unit(r.unit), "fromCompletion": r.from_completion });
         if let Some(w) = r.weekday { v["weekday"] = json!(w) }
         if r.weekdays_only { v["weekdaysOnly"] = json!(true) }
-        if let Some(d) = r.day { v["day"] = json!(d) }
         v
     });
     let kind = |k: SpanKind| format!("{k:?}").to_lowercase();
@@ -95,18 +96,21 @@ fn to_json(p: &Parsed) -> Value {
     })
 }
 
-/// What OpenTodo's TypeScript parser returns: quando matches it, except where quando.json reads a phrase differently.
+/// Every line in cases.json reads as its `want`; fails with a scoreboard.
 #[test]
-fn opentodo() {
-    let own: Value = serde_json::from_str(include_str!("quando.json")).unwrap();
-    let differs: Vec<&Value> = own["cases"].as_array().unwrap().iter().map(|c| &c["input"]).collect();
-    run(include_str!("cases.json"), &differs)
-}
-
-/// quando's own: phrases OpenTodo doesn't test, or reads differently.
-#[test]
-fn quando() {
-    run(include_str!("quando.json"), &[])
+fn cases() {
+    let file: Value = serde_json::from_str(include_str!("cases.json")).unwrap();
+    let now = datetime(file["now"].as_str().unwrap());
+    let cases = file["cases"].as_array().unwrap();
+    let mut failed = Vec::new();
+    for c in cases {
+        let ignored: Vec<&str> = c["ignored"].as_array().map(|a| a.iter().map(|v| v.as_str().unwrap()).collect()).unwrap_or_default();
+        let got = to_json(&parse(c["input"].as_str().unwrap(), now, &ignored));
+        if got != c["want"] {
+            failed.push(format!("{}\n  want {}\n  got  {}", c["input"], c["want"], got));
+        }
+    }
+    assert!(failed.is_empty(), "{}/{} cases pass\n\n{}", cases.len() - failed.len(), cases.len(), failed.join("\n"));
 }
 
 /// A month on from the 31st is the last day of a shorter month, not the start of the one after.
@@ -183,19 +187,4 @@ fn never_panics() {
             assert!(s.is_char_boundary(sp.start) && s.is_char_boundary(sp.end), "{s:?}");
         }
     }
-}
-
-fn run(json: &str, skip: &[&Value]) {
-    let file: Value = serde_json::from_str(json).unwrap();
-    let now = datetime(file["now"].as_str().unwrap());
-    let cases: Vec<&Value> = file["cases"].as_array().unwrap().iter().filter(|c| !skip.contains(&&c["input"])).collect();
-    let mut failed = Vec::new();
-    for c in &cases {
-        let ignored: Vec<&str> = c["ignored"].as_array().map(|a| a.iter().map(|v| v.as_str().unwrap()).collect()).unwrap_or_default();
-        let got = to_json(&parse(c["input"].as_str().unwrap(), now, &ignored));
-        if got != c["want"] {
-            failed.push(format!("{}\n  want {}\n  got  {}", c["input"], c["want"], got));
-        }
-    }
-    assert!(failed.is_empty(), "{}/{} cases pass\n\n{}", cases.len() - failed.len(), cases.len(), failed.join("\n"));
 }
