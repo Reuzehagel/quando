@@ -38,21 +38,25 @@ pub struct Span {
     pub kind: SpanKind,
 }
 
-/// The readings that depend on who is typing. The default reads as chrono-node does; [`Options::todo`] as a todo app.
+/// The readings that depend on who is typing. The default reads dates day first, as Europe writes them, and lets
+/// them fall in the past; [`Options::todo`] reads as a todo app.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct Options {
-    /// "3/12" is 3 December, not 12 March. A date that only reads one way ("5/31", "31/5") reads that way regardless.
-    pub day_first: bool,
+    /// "3/12" is 12 March, as the US writes it, not 3 December. A date that only reads one way ("5/31", "31/5")
+    /// reads that way regardless.
+    pub month_first: bool,
     /// Never before today: a time that has passed is tomorrow, "this month" is today rather than the 1st.
     pub forward: bool,
     /// A bare hour from 1 to 7 ("at 5", "fri 5") is the afternoon. "5am" and "05:00" still mean what they say.
     pub bare_hour_pm: bool,
+    /// The day "end of week" falls on, 0 being Sunday (the default); 5 for a working week. Weeks start on Monday.
+    pub week_end: u8,
 }
 
 impl Options {
-    /// For a todo app: a task is due ahead, nobody plans one for 5 in the morning, and dates are day first.
+    /// For a todo app: a task is due ahead, and nobody plans one for 5 in the morning.
     pub const fn todo() -> Options {
-        Options { day_first: true, forward: true, bare_hour_pm: true }
+        Options { month_first: false, forward: true, bare_hour_pm: true, week_end: 0 }
     }
 }
 

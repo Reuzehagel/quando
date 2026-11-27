@@ -13,6 +13,8 @@ pub enum Day {
     EndOf { year: Option<i32>, month: u8 },
     /// "end of month", "end of next month": the last day, this many months on.
     EndOfMonth(i64),
+    /// "end of week", "end of next week": the options' last day of the week, this many weeks on.
+    EndOfWeek(i64),
     /// "end of this year": 31 December, this many years on.
     EndOfYear(i64),
     Weekday(u8),
@@ -510,7 +512,7 @@ fn read_day_any(rest: &str, ws: &[Word], i: usize, o: &Options) -> Option<(Day, 
         return None;
     }
     // the order the options prefer, unless only the other one is a date
-    let first = if o.day_first { (a, b) } else { (b, a) };
+    let first = if o.month_first { (b, a) } else { (a, b) };
     let (day, month) = if valid(y.unwrap_or(2000), first.1, first.0) { first } else { (first.1, first.0) };
     Some((Day::On { year: y, month, day }, i + 2 + y.is_some() as usize))
 }
@@ -531,6 +533,7 @@ fn end_of(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
     }
     match ws.get(k)?.lower.as_str() {
         "month" => Some((Day::EndOfMonth(shift), k + 1)),
+        "week" => Some((Day::EndOfWeek(shift), k + 1)),
         "year" => Some((Day::EndOfYear(shift), k + 1)),
         w if k == i => Some((Day::EndOf { year: None, month: month(w)? }, k + 1)),
         _ => None,
@@ -630,7 +633,7 @@ pub fn resolve(m: DateMatch, now: DateTime, o: &Options) -> (DateTime, bool) {
         }
     }
     let days = match m.day {
-        Some(d) => day_of(d, now, o.forward),
+        Some(d) => day_of(d, now, o),
         // "at 5": today, unless it has passed and the options look forward
         None if o.forward && (hour, minute) <= (now.hour, now.minute) => today + 1,
         None => today,
@@ -640,7 +643,8 @@ pub fn resolve(m: DateMatch, now: DateTime, o: &Options) -> (DateTime, bool) {
 }
 
 /// The day a phrase names, in days since 1970.
-fn day_of(d: Day, now: DateTime, forward: bool) -> i64 {
+fn day_of(d: Day, now: DateTime, o: &Options) -> i64 {
+    let forward = o.forward;
     let today = days_from_civil(now.year, now.month, now.day);
     // the month of a name: this one, or the next with that name
     let named = |year: Option<i32>, month: u8| year.unwrap_or(if month >= now.month { now.year } else { now.year + 1 });
@@ -658,6 +662,10 @@ fn day_of(d: Day, now: DateTime, forward: bool) -> i64 {
             };
             if forward { start.max(today) } else { start }
         }
+        Day::EndOfWeek(n) => {
+            let end = monday + 7 * n + (o.week_end as i64 + 6).rem_euclid(7);
+            if forward { end.max(today) } else { end }
+        }
         Day::Ordinal(d) => (0..13)
             .map(|k| months_on(now, k))
             .filter(|&(y, mo)| valid(y, mo, d))
@@ -666,7 +674,7 @@ fn day_of(d: Day, now: DateTime, forward: bool) -> i64 {
             .unwrap_or(today),
         Day::Ahead(a) => ahead_days(now, a),
         Day::From(a, base) => {
-            let (year, month, day) = civil_from_days(day_of(*base, now, forward));
+            let (year, month, day) = civil_from_days(day_of(*base, now, o));
             ahead_days(DateTime { year, month, day, ..now }, a)
         }
         // "fri" on a Friday means next week

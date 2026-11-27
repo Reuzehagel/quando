@@ -2,7 +2,7 @@
 use quando::{dates, parse, DateTime, Options, Parsed, SpanKind, Unit};
 use serde_json::{json, Value};
 
-/// `dates` finds every date in free text; the default options read as chrono-node does, `todo()` as `parse` does.
+/// `dates` finds every date in free text; the default options let dates fall in the past, `todo()` reads as `parse` does.
 #[test]
 fn options() {
     let now = datetime("2026-11-20T14:00");
@@ -10,7 +10,8 @@ fn options() {
         dates(s, datetime("2026-11-20T14:00"), o).iter().map(|f| (&s[f.start..f.end], f.date)).collect()
     }
     let general = Options::default();
-    assert_eq!(found("call me 3/12 at 5, or else friday", &general), [("3/12 at 5", datetime("2027-03-12T05:00")), ("friday", datetime("2026-11-27T00:00"))]);
+    assert_eq!(found("call me 3/12 at 5, or else friday", &general), [("3/12 at 5", datetime("2026-12-03T05:00")), ("friday", datetime("2026-11-27T00:00"))]);
+    assert_eq!(found("3/12", &Options { month_first: true, ..general })[0].1, datetime("2027-03-12T00:00"));
     assert_eq!(found("call me 3/12 at 5", &Options::todo()), [("3/12 at 5", datetime("2026-12-03T17:00"))]);
     // a passed time stays today, and "this month" is its 1st, unless looking forward
     assert_eq!(found("at 9", &general), [("at 9", datetime("2026-11-20T09:00"))]);
@@ -21,6 +22,18 @@ fn options() {
     assert_eq!(found("31/5", &general)[0].1, datetime("2027-05-31T00:00"));
     assert!(dates("tomorrow's paper", now, &general).is_empty());
     assert_eq!(found("+15min", &general), [("+15min", datetime("2026-11-20T14:15"))]);
+    // "end of week" is whichever day the user's week ends on; on Friday the 20th:
+    assert_eq!(found("end of week", &general), [("end of week", datetime("2026-11-22T00:00"))]);
+    assert_eq!(found("end of the week", &general)[0].1, datetime("2026-11-22T00:00"));
+    assert_eq!(found("end of next week", &general)[0].1, datetime("2026-11-29T00:00"));
+    let friday = Options { week_end: 5, ..Options::todo() };
+    assert_eq!(found("end of this week", &friday)[0].1, datetime("2026-11-20T00:00"));
+    assert_eq!(found("end of next week", &friday)[0].1, datetime("2026-11-27T00:00"));
+    // already behind on a Saturday: yesterday, or today looking forward
+    let saturday = datetime("2026-11-21T10:00");
+    assert_eq!(dates("end of week", saturday, &Options { week_end: 5, ..general })[0].date, datetime("2026-11-20T00:00"));
+    assert_eq!(dates("end of week", saturday, &friday)[0].date, datetime("2026-11-21T00:00"));
+    assert_eq!(parse("report end of week", now, &[]).title, "report");
 }
 
 fn datetime(s: &str) -> DateTime {

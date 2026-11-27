@@ -6,7 +6,7 @@ A natural-language date parser for English, in Rust with no runtime dependencies
 use quando::{dates, parse, Options};
 
 let found = dates("call me 3/12 at 5, or else friday", now, &Options::default());
-// "3/12 at 5" is 12 March 05:00, "friday" is the coming Friday; each with its byte offsets
+// "3/12 at 5" is 3 December 05:00, "friday" is the coming Friday; each with its byte offsets
 
 let p = parse("call bank at 5 tomorrow #admin", now, &[]);
 // p.title == "call bank", p.date == 2026-11-21 17:00, p.list == Some("admin")
@@ -16,22 +16,22 @@ let p = parse("call bank at 5 tomorrow #admin", now, &[]);
 
 ## Options
 
-Some readings depend on who is typing. `Options::default()` reads as chrono-node does; `Options::todo()`, which `parse` uses, turns all three on. `parse_with` takes your own.
+Some readings depend on who is typing. `Options::default()` turns every switch off; `Options::todo()`, which `parse` uses, turns on `forward` and `bare_hour_pm`. `parse_with` takes your own.
 
-| Field | Off (default) | On (`todo()`) |
+| Field | Off (default) | On |
 |---|---|---|
-| `day_first` | `3/12` is 12 March | `3/12` is 3 December |
-| `forward` | `at 9` at 14:00 is 09:00 today; `this month` is the 1st | `at 9` is tomorrow; `this month`, `this week`, `this weekend` are never before today |
+| `month_first` | `3/12` is 3 December, as Europe writes it | `3/12` is 12 March, as the US writes it |
+| `forward` | `at 9` at 14:00 is 09:00 today; `this month` is the 1st | `at 9` is tomorrow; `this month`, `this week`, `this weekend`, `end of week` are never before today |
 | `bare_hour_pm` | `at 5` is 05:00 | `at 5` is 17:00 (a bare 1 to 7); `5am` and `05:00` still mean what they say |
 
-A date that only reads one way (`5/31`, `31/5`) reads that way under either `day_first`. Weeks start on Monday in both.
+`week_end` is the day `end of week` falls on, 0 being Sunday (the default) and 5 a working week's Friday. A date that only reads one way (`5/31`, `31/5`) reads that way under either `month_first`. Weeks start on Monday.
 
 ## What it reads
 
 As `parse` reads it, with `Options::todo()`; the options above change only what their row says.
 
-- Days: `today`, `tomorrow`, `yesterday`, `tonight`, `this morning`, weekdays (`fri`, `friday`, `this wednesday`), `next friday` (that day in next week; weeks start on Monday), `this weekend`, `next weekend` (the Saturday; on a Sunday, this weekend is today), `the 5th` (the next 5th, today included), `the 5th of December`, `27 nov`, `nov 27th`, `12th of July`, `Dec. 21`, `27 nov 2027`, `Jan 1, 2020`, `3/12` (day first), `5/31` (month first when day first can't be a date), `3/12/2026`, `2014-04-18`, `2027/1/9`, `9-jan-2027`, `15sep`. A two-digit year counts only where the phrase ends and it can't be an hour: `3 aug 27` is 2027, "dec 5 50 invitations" is a count.
-- Months: `in June`, `September 2012`, `9/2012`, `2024-Aug`, `end of month`, `end of next month`, `end of July`, `end of this year`, `last day of July`. A month name alone stays text: "call may".
+- Days: `today`, `tomorrow`, `yesterday`, `tonight`, `this morning`, weekdays (`fri`, `friday`, `this wednesday`), `next friday` (that day in next week; weeks start on Monday), `this weekend`, `next weekend` (the Saturday; on a Sunday, this weekend is today), `the 5th` (the next 5th, today included), `the 5th of December`, `27 nov`, `nov 27th`, `12th of July`, `Dec. 21`, `27 nov 2027`, `Jan 1, 2020`, `3/12` (day first; `month_first` turns it), `5/31` (month first when day first can't be a date), `3/12/2026`, `2014-04-18`, `2027/1/9`, `9-jan-2027`, `15sep`. A two-digit year counts only where the phrase ends and it can't be an hour: `3 aug 27` is 2027, "dec 5 50 invitations" is a count.
+- Months: `in June`, `September 2012`, `9/2012`, `2024-Aug`, `end of month`, `end of next month`, `end of July`, `end of this year`, `last day of July`, `end of week`, `end of next week` (the day in `week_end`, Sunday by default). A month name alone stays text: "call may".
 - Behind: `last week`, `last month`, `last 2 weeks` (that long ago), `last friday` (the one before today). A task can be overdue.
 - From another day: `the day after tomorrow`, `2 days before friday`, `a week after 3/12`. Whole days only: "arrive 15 minutes before" stays text.
 - Ranges: `monday - friday`, `10pm to 2am`, `10 - 12 August`, `aug 10 to 22, 2027`, with a dash, `to`, `until`, `till` or `through`. The date is the start and the span runs to the end; the start borrows a year or a day only the end says. The end must be a date itself: "call monday to confirm" keeps its title.
