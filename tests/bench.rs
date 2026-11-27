@@ -1,6 +1,7 @@
 // How often quando reads chrono-node's English test phrases as bench.json records them. The score is agreement, not
 // correctness, and it only goes up: raise FLOOR when it does. A phrase quando reads better belongs in cases.json.
-// `cargo test --test bench -- --nocapture` prints the score; set QUANDO_MISSES=1 to list every disagreement.
+// `cargo test --test bench -- --nocapture` prints the score; QUANDO_MISSES=1 lists every disagreement, and
+// QUANDO_MISSES=missed (or differs, extra, or a comma list) lists only those.
 mod common;
 
 use common::{datetime, stamp};
@@ -13,7 +14,8 @@ const FLOOR: usize = 424;
 fn bench() {
     let file: Value = serde_json::from_str(include_str!("bench.json")).unwrap();
     let now = datetime(file["now"].as_str().unwrap());
-    let show = std::env::var_os("QUANDO_MISSES").is_some();
+    let show = std::env::var("QUANDO_MISSES").ok();
+    let shown = |name: &str| show.as_deref().is_some_and(|s| s == "1" || s.split(',').any(|w| w == name));
 
     let (mut same, mut missed, mut extra, mut differs) = (0, Vec::new(), Vec::new(), Vec::new());
     let cases = file["cases"].as_array().unwrap();
@@ -40,8 +42,8 @@ fn bench() {
 
     println!("{same}/{} agree ({:.0}%)", cases.len(), 100.0 * same as f64 / cases.len() as f64);
     println!("{} missed (no date in quando), {} read differently, {} extra (a date only quando sees)", missed.len(), differs.len(), extra.len());
-    if show {
-        for (name, list) in [("missed", &missed), ("differs", &differs), ("extra", &extra)] {
+    for (name, list) in [("missed", &missed), ("differs", &differs), ("extra", &extra)] {
+        if shown(name) {
             println!("\n== {name}");
             list.iter().for_each(|l| println!("{l}"));
         }

@@ -1,6 +1,10 @@
 // Reading a date phrase: parts (a day, a time, a part of the day, a year) joined by spaces, commas, "on", "of", "by",
 // "before" or "after",
 // as in "Tuesday, 10 January", "12th of July at 19:00" or "tonight at 8".
+//
+// Reading order: `read_date` → `phrase`, which reads each part with `read_part` (`read_day` → `read_day_any`,
+// `read_time`, `part_of_day`) and a range's end with `range_end`. `resolve` → `day_of` then turns the match into a
+// `DateTime` against `now`.
 use crate::calendar::{civil_from_days, days_from_civil, valid, weekday_of};
 use crate::words::{month, weekday, Text};
 use crate::{DateTime, Options};
