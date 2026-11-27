@@ -2,6 +2,9 @@
 name = "quando"
 version = "0.1.0"
 edition = "2024"
+license = "MIT"
+description = "Natural-language parser for one typed line: dates, times, repeats and markers, with spans."
+repository = "https://github.com/Reuzehagel/quando"
 
 [dependencies]
 
