@@ -63,6 +63,11 @@ fn weekends() {
     assert_eq!(date("this weekend", saturday), Some((11, 21)));
     assert_eq!(date("next weekend", saturday), Some((11, 28)));
     assert_eq!(date("next saturday", saturday), Some((11, 28)));
+    // "this week", "this month", "this year" start before today, so they are today
+    for s in ["this week", "this month", "this year"] {
+        assert_eq!(date(s, sunday), Some((11, 22)), "{s}");
+    }
+    assert_eq!(parse("pay rent this month", datetime(sunday), &[]).title, "pay rent");
 }
 
 /// Anything typed gives an answer, never a panic: spans land on char boundaries whatever the bytes.

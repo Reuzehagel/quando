@@ -301,8 +301,12 @@ fn read_day_any(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
         "in" | "within" | "after" if spaced_to(i + 1) => return read_amount(rest, ws, i + 1).map(|(a, k)| (Day::Ahead(a), k)),
         // "next week" is next Monday (on a Sunday, tomorrow); "in a week" is seven days
         "this" if spaced_to(i + 1) => {
-            let w = at(i + 1)?;
-            return if w == "weekend" { Some((Day::Weekend(0), i + 2)) } else { Some((Day::Weekday(weekday(w)?), i + 2)) };
+            return match at(i + 1)? {
+                "weekend" => Some((Day::Weekend(0), i + 2)),
+                // the start of it, and never before today (like "this weekend"), which is always today
+                "week" | "month" | "year" => Some((Day::InDays(0), i + 2)),
+                w => Some((Day::Weekday(weekday(w)?), i + 2)),
+            };
         }
         // "the 5th", "the 5th of December"; a plain "the 2" is a count, not a day
         "the" if spaced_to(i + 1) => {
