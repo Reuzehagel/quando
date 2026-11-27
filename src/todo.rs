@@ -97,7 +97,7 @@ pub fn parse_with(text: &str, now: DateTime, ignored: &[&str], o: &Options) -> P
         let after_repeat = repeat_end.is_some_and(|e| e < t[i].start && rest[e..t[i].start].trim().is_empty());
         let Some(m) = read_date(&t, i, o, after_repeat) else { continue };
         // "dentist on friday" is a dentist: the word leading into the date goes with it
-        let lead = t.spaced(i) && matches!(t.at(i - 1), Some("on" | "by" | "in"));
+        let lead = t.spaced(i) && matches!(t.at(i - 1), Some("on" | "by" | "in" | "between"));
         let start = if lead { t[i - 1].start } else { m.start };
         if !line.take(start, m.end, SpanKind::Date) {
             continue;

@@ -69,27 +69,29 @@ The readings below are `parse`'s, with `Options::todo()`. The options above chan
 
 - **Days:** `today`, `tomorrow`, `yesterday`, `tonight`, `this morning`.
   - Weekdays: `fri`, `friday`, `this wednesday`. `next friday` is the Friday of next week.
+  - A weekday in a named week: `friday this week`, `monday next week`, `friday of next week`, `tuesday, last week`.
   - Weekends: `this weekend` and `next weekend` are the Saturday. On a Sunday, this weekend is today.
   - Days of the month: `the 5th` is the next 5th, today included. Also `the 5th of December`.
   - Dates with month names: `27 nov`, `nov 27th`, `12th of July`, `Dec. 21`, `27 nov 2027`, `Jan 1, 2020`, `9-jan-2027`, `15sep`.
   - Numeric dates: `3/12` (day first), `5/31` (month first, since day first can't be a date), `3/12/2026`, `2014-04-18`, `2027/1/9`.
   - A two-digit year counts only at the end of the phrase, where it can't be an hour: `3 aug 27` is 2027, but in "dec 5 50 invitations" the 50 is a count.
-- **Months:** `in June`, `September 2012`, `9/2012`, `2024-Aug`.
+- **Months:** `in June`, `September 2012`, `2024 August`, `9/2012`, `2024-Aug`. Also `2018 March 18`.
   - Ends: `end of month`, `end of next month`, `end of July`, `last day of July`, `end of this year`, `end of week`, `end of next week`.
   - A month name alone is a word, not a date: "call may".
-- **The past:** `last week`, `last month`, `last 2 weeks` (that long ago), `last friday` (the one before today). A task can be overdue.
+- **The past:** `last week`, `last month`, `last 2 weeks` (that long ago), `last friday` (the one before today), `last weekend`, `last night`. A task can be overdue.
 - **Counting from another day:** `the day after tomorrow`, `2 days before friday`, `a week after 3/12`. Whole days only: in "arrive 15 minutes before", nothing is a date.
 - **Ranges:** `monday - friday`, `10pm to 2am`, `10 - 12 August`, `aug 10 to 22, 2027`.
   - The separator is a dash, `to`, `until`, `till` or `through`.
   - The date is the start, and the span runs to the end. The start borrows a year, a day or a time that only the end gives: `tomorrow until 5pm` is tomorrow at 17:00.
   - The end must be a date itself, so "call monday to confirm" keeps "to confirm" in its title. A number that counts something (`nov 27 - 30 euro`) is no range's end.
+  - Time ranges: `8 - 11pm`, `1pm-3`, `12-3pm`, `between 3:30-4:30pm`, `10 - 11 at night`. A bare start takes the end's half of the day, unless it is the later hour: `11-3pm` starts at 11:00. A leading `between` goes with the date.
 - **Relative:** `in 3 days`, `in five days`, `in a week`, `in 3 months`, `next month`, `next year`, `next 2 weeks`, `2 days later`, `3w later`, `3 weeks from now`, `after a year`, `5 days ago`, `in a few days` (3), `in a couple of weeks`.
   - `next week` is next Monday, like a date picker's button.
   - A month on keeps the day of the month, clamped: a month on from 31 January is 28 February.
-- **Moments:** `now`, `in an hour`, `in half an hour`, `in 2h`, `within 20 minutes`, `+15min`, `in about 2 hours`, `in 1d, 2hr, and 5min`. These count from now, to the minute.
+- **Moments:** `now`, `in an hour`, `in half an hour`, `in 1.5 hours`, `in 2h`, `within 20 minutes`, `+15min`, `in about 2 hours`, `in 1d, 2hr, and 5min`. These count from now, to the minute.
   - An amount needs a word that makes it a date: `in`, `within`, `after`, `+`, `later`, `ago` or `from now`. In "boil eggs 10 minutes", nothing is a date.
 - **Ordinal words:** `May eighth`, `May twenty-fourth`, `the twenty-fourth of May`. Only next to a month: "read the second half" stays text.
-- **Times:** `at 5`, `5pm`, `10:30 am`, `15:30`, `05:30`, `at 12.30`, `noon`, `midnight`, and a bare hour after a day: `fri 9`.
+- **Times:** `at 5`, `5pm`, `10:30 am`, `9 p.m.`, `15:30`, `05:30`, `at 12.30`, `noon`, `midnight`, and a bare hour after a day: `fri 9`.
   - A time on its own is today, or tomorrow once it has passed.
 - **Parts of the day:** `tomorrow morning`, `6 in the morning`, `11 at night`, `11 tonight`, `this afternoon at 3`.
   - `tonight at 12` and `midnight tonight` are the midnight at the end of today.
@@ -125,3 +127,4 @@ QUANDO_MISSES=1 cargo test --test bench -- --nocapture   # the benchmark score, 
 | next friday, weekends, the 5th | 260/569 (46%) |
 | amounts (half an hour, 2h, 1d 2hr 5min), ordinal words | 303/569 (53%) |
 | ranges, last week, the day after tomorrow, a few days, 9-jan-2027, two-digit years | 404/569 (71%) |
+| time ranges (8 - 11pm, 1pm-3), p.m., friday of next week, last night, 1.5 hours, 2024 August | 424/569 (75%) |

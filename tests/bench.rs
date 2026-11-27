@@ -7,7 +7,7 @@ use common::{datetime, stamp};
 use quando::{parse, SpanKind};
 use serde_json::Value;
 
-const FLOOR: usize = 404;
+const FLOOR: usize = 424;
 
 #[test]
 fn bench() {
@@ -23,9 +23,9 @@ fn bench() {
         let span = p.spans.iter().find(|s| s.kind == SpanKind::Date);
         let date = span.and(p.date).map(|d| stamp(d, p.has_time));
         let want = c["date"].as_str();
-        // quando's span takes a leading "on", "by" or "in" so the title reads well; chrono's leaves it out
+        // quando's span takes a leading "on", "by", "in" or "between" so the title reads well; chrono's leaves it out
         let span = span.map(|s| {
-            let lead = c["span"][0].as_u64().map(|w| w as usize).filter(|&w| w > s.start && matches!(input[s.start..w].trim().to_lowercase().as_str(), "on" | "by" | "in"));
+            let lead = c["span"][0].as_u64().map(|w| w as usize).filter(|&w| w > s.start && matches!(input[s.start..w].trim().to_lowercase().as_str(), "on" | "by" | "in" | "between"));
             (lead.unwrap_or(s.start), s.end)
         });
         let line = |got: &str| format!("{input:?}\n    want {} {}\n    got  {got}", want.unwrap_or("-"), c["span"]);

@@ -28,6 +28,30 @@ fn fixed() {
         ("sale nov 27 - 30% off", "2026-11-27T00:00", "sale - 30% off"),
         ("call nov 27 - 30 minutes", "2026-11-27T00:00", "call - 30 minutes"),
         ("conference nov 27 - 30 in Berlin", "2026-11-27T00:00", "conference in Berlin"),
+        // a dotted half of the day
+        ("dinner 24 October, 9 p.m.", "2027-10-24T21:00", "dinner"),
+        ("call 9 a.m. tomorrow", "2026-11-21T09:00", "call"),
+        // a weekday in a named week
+        ("review friday this week", "2026-11-20T00:00", "review"),
+        ("review monday next week", "2026-11-23T00:00", "review"),
+        ("review friday of next week at 9am", "2026-11-27T09:00", "review"),
+        ("review tuesday, last week", "2026-11-10T00:00", "review"),
+        // a time range's start takes the half of the day its end says
+        ("call 8 - 11pm", "2026-11-20T20:00", "call"),
+        ("gym 1pm-3", "2026-11-21T13:00", "gym"),
+        ("lunch 12-3pm", "2026-11-21T12:00", "lunch"),
+        ("meeting between 3:30-4:30pm", "2026-11-20T15:30", "meeting"),
+        ("party 10 - 11 at night", "2026-11-20T22:00", "party"),
+        ("shift 11-3am", "2026-11-20T23:00", "shift"),
+        ("timeoff monday 7 to 9am", "2026-11-23T07:00", "timeoff"),
+        ("bring 5pm - 3 people", "2026-11-20T17:00", "bring - 3 people"),
+        // behind us
+        ("deadline was last night", "2026-11-19T00:00", "deadline was"),
+        ("trip last weekend", "2026-11-14T00:00", "trip"),
+        // a decimal amount, a year before its month
+        ("call in 1.5 hours", "2026-11-20T15:30", "call"),
+        ("trip 2027 August", "2027-08-01T00:00", "trip"),
+        ("trip 2027 aug 10", "2027-08-10T00:00", "trip"),
     ] {
         let p = parse(s, now, &[]);
         assert_eq!(p.date, Some(datetime(date)), "{s}");
@@ -181,7 +205,8 @@ fn never_panics() {
         "every 99999999999 days", "at 99", "25:00", "12am", "0pm", "ünïcödé #lïst @tâg ! morgen", "日本語 #リスト 明日\u{3000}!!", "tomorrow’s", "a\u{3000}!!\u{3000}b",
         "+", "in", "in half", "in half an", "in 1d,", "in 1d, and", "twenty-", "twenty-ninth", "thirty-ninth of may", "the", "next", "end of", "99999999mo later", "+1y",
         "-", "to", "monday -", "monday to", "- friday", "10 -", "10 to", "aug 10 to", "day", "day after", "the day before", "last", "past 2", "last day of",
-        "end of the", "end of the next", "a few", "in a couple", "in about", "1-", "15sep-", "2024-", "2024/aug/", "9-jan-", "aug 5 –", "aug 5 – 7"] {
+        "end of the", "end of the next", "a few", "in a couple", "in about", "1-", "15sep-", "2024-", "2024/aug/", "9-jan-", "aug 5 –", "aug 5 – 7",
+        "9 p", "9 p.", "9 p.m", "9 p.m.", "p.m.", "in 1.", "in 1.5", "in 999.9 hours", "12-", "8 -", "8 - 11", "1pm-", "friday next", "friday of", "2024 ", "2024 aug 99", "last"] {
         let p = parse(s, now, &[]);
         for sp in &p.spans {
             assert!(s.is_char_boundary(sp.start) && s.is_char_boundary(sp.end), "{s:?}");
