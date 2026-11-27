@@ -28,16 +28,18 @@ fn to_json(p: &Parsed) -> Value {
     })
 }
 
-/// What OpenTodo's TypeScript parser returns: quando matches it.
+/// What OpenTodo's TypeScript parser returns: quando matches it, except where quando.json reads a phrase differently.
 #[test]
 fn opentodo() {
-    run(include_str!("cases.json"))
+    let own: Value = serde_json::from_str(include_str!("quando.json")).unwrap();
+    let differs: Vec<&Value> = own["cases"].as_array().unwrap().iter().map(|c| &c["input"]).collect();
+    run(include_str!("cases.json"), &differs)
 }
 
 /// quando's own: phrases OpenTodo doesn't test, or reads differently.
 #[test]
 fn quando() {
-    run(include_str!("quando.json"))
+    run(include_str!("quando.json"), &[])
 }
 
 /// Anything typed gives an answer, never a panic: spans land on char boundaries whatever the bytes.
@@ -53,12 +55,12 @@ fn never_panics() {
     }
 }
 
-fn run(json: &str) {
+fn run(json: &str, skip: &[&Value]) {
     let file: Value = serde_json::from_str(json).unwrap();
     let now = datetime(file["now"].as_str().unwrap());
-    let cases = file["cases"].as_array().unwrap();
+    let cases: Vec<&Value> = file["cases"].as_array().unwrap().iter().filter(|c| !skip.contains(&&c["input"])).collect();
     let mut failed = Vec::new();
-    for c in cases {
+    for c in &cases {
         let ignored: Vec<&str> = c["ignored"].as_array().map(|a| a.iter().map(|v| v.as_str().unwrap()).collect()).unwrap_or_default();
         let got = to_json(&parse(c["input"].as_str().unwrap(), now, &ignored));
         if got != c["want"] {

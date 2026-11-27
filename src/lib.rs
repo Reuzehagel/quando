@@ -55,6 +55,13 @@ pub struct Repeat {
     pub day: Option<u8>,
 }
 
+impl Repeat {
+    /// Whether the repeat can fall on this weekday (0 is Sunday).
+    pub fn allows(&self, weekday: u8) -> bool {
+        self.weekday.is_none_or(|d| d == weekday) && !(self.weekdays_only && (weekday == 0 || weekday == 6))
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Parsed {
     pub title: String,
@@ -106,7 +113,20 @@ pub fn parse(text: &str, now: DateTime, ignored: &[&str]) -> Parsed {
         if possessive(&text[m.end..]) || !line.take(ws[i].start, m.end, SpanKind::Date) {
             continue;
         }
-        date = Some(resolve(m, now));
+        let time_only = m.day.is_none();
+        let (mut d, has_time) = resolve(m, now);
+        // "every weekday at 9" on a Friday afternoon starts Monday, not Saturday
+        if let Some(r) = repeat.as_ref().filter(|_| time_only) {
+            let mut days = days_from_civil(d.year, d.month, d.day);
+            for _ in 0..7 {
+                if r.allows(weekday_of(days)) {
+                    break;
+                }
+                days += 1;
+            }
+            (d.year, d.month, d.day) = calendar::civil_from_days(days);
+        }
+        date = Some((d, has_time));
         break;
     }
     let has_time = date.is_some_and(|(_, t)| t);

@@ -19,7 +19,7 @@ let p = quando::parse("call bank at 5 tomorrow #admin", now, &[]);
 ## The tests
 
 - `tests/cases.json`: what OpenTodo's TypeScript parser (on chrono-node) returns for its phrase tests, as of Friday 2026-11-20 14:00. quando matches all of it. Regenerate with `node tools/export-cases.ts tests/cases.json` from a sibling `../opentodo` checkout.
-- `tests/quando.json`: phrases OpenTodo doesn't test, or reads differently (`fri 5:30` is 17:30 here, 05:30 there).
+- `tests/quando.json`: phrases OpenTodo doesn't test, or reads differently. A case here overrides the one in `cases.json` with the same input. The differences: `fri 5:30` is 17:30 here, 05:30 there; `standup every weekday at 9` on a Friday afternoon starts Monday here, Saturday there.
 
 A phrase that reads wrong gets a case before it gets a fix. Span offsets are bytes in Rust and UTF-16 units in JavaScript; they agree while a line is ASCII.
 
