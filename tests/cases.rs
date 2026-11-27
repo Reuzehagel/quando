@@ -21,6 +21,11 @@ fn fixed() {
         ("gym every day 7", "2026-11-20T19:00", "gym"),
         // due by the end of a range
         ("report tomorrow until 5pm", "2026-11-21T17:00", "report"),
+        // a number that counts something is no range's end
+        ("dentist nov 27 - 30 euro", "2026-11-27T00:00", "dentist - 30 euro"),
+        ("sale nov 27 - 30% off", "2026-11-27T00:00", "sale - 30% off"),
+        ("call nov 27 - 30 minutes", "2026-11-27T00:00", "call - 30 minutes"),
+        ("conference nov 27 - 30 in Berlin", "2026-11-27T00:00", "conference in Berlin"),
     ] {
         let p = parse(s, now, &[]);
         assert_eq!(p.date, Some(datetime(date)), "{s}");

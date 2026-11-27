@@ -155,7 +155,18 @@ fn range_end(rest: &str, ws: &[Word], k: usize) -> Option<usize> {
 /// The word after "August 10", or after the day its range runs to: the "22" in "August 10 - 22".
 fn past_range(rest: &str, ws: &[Word], k: usize) -> usize {
     let day = |j: usize| day_number(&ws[j].lower).map(|_| j + 1).or_else(|| ordinal(rest, ws, j).map(|(_, k)| k));
-    range_end(rest, ws, k).and_then(day).unwrap_or(k)
+    range_end(rest, ws, k).and_then(day).filter(|&e| !counted(rest, ws, e)).unwrap_or(k)
+}
+
+/// Whether the number before word `k` counts something: the "30" in "nov 27 - 30 euro", "- 30%", "- 30 minutes".
+fn counted(rest: &str, ws: &[Word], k: usize) -> bool {
+    // shortcut: a fixed list of what people count, so an unlisted one ("30 bottles") still reads as a range's end
+    const COUNTS: [&str; 22] = [
+        "euro", "euros", "eur", "dollar", "dollars", "usd", "pound", "pounds", "gbp", "cents", "percent", "people", "persons", "guests",
+        "pages", "items", "pieces", "pcs", "times", "km", "kg", "x",
+    ];
+    rest[ws[k - 1].end..].starts_with(['%', '€', '$', '£'])
+        || ws.get(k).is_some_and(|n| spaced(rest, &ws[k - 1], n) && (COUNTS.contains(&n.lower.as_str()) || unit(&n.lower).is_some()))
 }
 
 /// A bare hour where the day is said elsewhere: the "9" in "every monday 9".
