@@ -11,7 +11,7 @@ let p = quando::parse("call bank at 5 tomorrow #admin", now, &[]);
 
 ## What it reads
 
-- Days: `today`, `tomorrow`, weekdays (`fri`, `friday`), `in 3 days`, `in 2 weeks`, `27 nov`, `nov 27th`, `27 nov 2027`, `3/12` (day first), `3/12/2026`.
+- Days: `today`, `tomorrow`, weekdays (`fri`, `friday`), `in 3 days`, `in 2 weeks`, `in 3 months`, `in 2 years`, `next week` (a week from today), `next month`, `next year` (months keep the day, clamped: a month on from 31 Jan is 28 Feb), `27 nov`, `nov 27th`, `27 nov 2027`, `3/12` (day first), `3/12/2026`.
 - Times: `at 5`, `5pm`, `10:30 am`, `15:30`, `05:30`, and a bare hour after a day (`fri 9`). A bare 1 to 7 is the afternoon; `5am` and `05:30` mean what they say. A time on its own is today, or tomorrow once it has passed.
 - Repeats: `daily`, `weekly`, `monthly`, `yearly`, `every monday`, `every other week`, `every 3 days`, `every weekday`, and `after done`.
 - Markers: `#list`, `@tag`, `!` to `!!!`.

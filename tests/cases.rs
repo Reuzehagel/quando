@@ -42,6 +42,14 @@ fn quando() {
     run(include_str!("quando.json"), &[])
 }
 
+/// A month on from the 31st is the last day of a shorter month, not the start of the one after.
+#[test]
+fn months_clamp() {
+    let date = |s, now| parse(s, datetime(now), &[]).date.map(|d| (d.year, d.month, d.day));
+    assert_eq!(date("next month", "2027-01-31T10:00"), Some((2027, 2, 28)));
+    assert_eq!(date("in 1 year", "2028-02-29T10:00"), Some((2029, 2, 28)));
+}
+
 /// Anything typed gives an answer, never a panic: spans land on char boundaries whatever the bytes.
 #[test]
 fn never_panics() {

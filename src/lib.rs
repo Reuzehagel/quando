@@ -248,6 +248,19 @@ enum Day {
     On { year: Option<i32>, month: u8, day: u8 },
     Weekday(u8),
     InDays(i64),
+    /// The same day of the month, clamped: a month on from 31 Jan is 28 Feb.
+    InMonths(i64),
+}
+
+/// "in 3 months", "next year": a count and a unit.
+fn ahead(n: i64, unit: &str) -> Option<Day> {
+    Some(match unit {
+        "day" | "days" => Day::InDays(n),
+        "week" | "weeks" => Day::InDays(7 * n),
+        "month" | "months" => Day::InMonths(n),
+        "year" | "years" => Day::InMonths(12 * n),
+        _ => return None,
+    })
 }
 
 struct Time {
@@ -306,14 +319,12 @@ fn read_day_any(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
     match w {
         "today" => return Some((Day::InDays(0), i + 1)),
         "tomorrow" => return Some((Day::InDays(1), i + 1)),
-        "in" if spaced_to(i + 1) && spaced_to(i + 2) => {
-            let n = number(at(i + 1)?, 3)? as i64;
-            let per = match at(i + 2)? {
-                "day" | "days" => 1,
-                "week" | "weeks" => 7,
-                _ => return None,
-            };
-            return Some((Day::InDays(n * per), i + 3));
+        "in" if spaced_to(i + 1) && spaced_to(i + 2) => return Some((ahead(number(at(i + 1)?, 3)? as i64, at(i + 2)?)?, i + 3)),
+        // "next week" is a week from today, as "in 1 week"
+        "next" if spaced_to(i + 1) => {
+            if let Some(d) = ahead(1, at(i + 1)?).filter(|_| at(i + 1) != Some("day")) {
+                return Some((d, i + 2));
+            }
         }
         _ => {}
     }
@@ -396,6 +407,12 @@ fn resolve(m: DateMatch, now: DateTime) -> (DateTime, bool) {
     }
     let days = match m.day {
         Some(Day::InDays(n)) => today + n,
+        Some(Day::InMonths(n)) => {
+            let months = now.year as i64 * 12 + now.month as i64 - 1 + n;
+            let (y, m) = (months.div_euclid(12) as i32, (months.rem_euclid(12) + 1) as u8);
+            let last = (28..=31).rev().find(|&d| valid(y, m, d)).unwrap();
+            days_from_civil(y, m, now.day.min(last))
+        }
         // "fri" on a Friday means next week
         Some(Day::Weekday(d)) => today + ((d as i64 - weekday_of(today) as i64 + 6).rem_euclid(7) + 1),
         Some(Day::On { year: Some(y), month, day }) => days_from_civil(y, month, day),
