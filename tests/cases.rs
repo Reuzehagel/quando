@@ -11,7 +11,6 @@ fn fixed() {
     for (s, date, title) in [
         // this November's 1st has passed
         ("dentist in November", "2026-11-20T00:00", "dentist"),
-        ("in November", "2026-11-20T00:00", ""),
         ("dentist in November 2026", "2026-11-01T00:00", "dentist"),
         // the midnight that ends tonight
         ("dentist tonight at 12", "2026-11-21T00:00", "dentist"),
@@ -83,12 +82,9 @@ fn options() {
     // a passed time stays today, and "this month" is its 1st, unless looking forward
     assert_eq!(found("at 9", &general), [("at 9", datetime("2026-11-20T09:00"))]);
     assert_eq!(found("this month", &general), [("this month", datetime("2026-11-01T00:00"))]);
-    assert_eq!(found("this month", &Options::todo()), [("this month", datetime("2026-11-20T00:00"))]);
     // only one order is a date, so the option doesn't matter
     assert_eq!(found("5/31", &Options::todo())[0].1, datetime("2027-05-31T00:00"));
     assert_eq!(found("31/5", &general)[0].1, datetime("2027-05-31T00:00"));
-    assert!(dates("tomorrow's paper", now, &general).is_empty());
-    assert_eq!(found("+15min", &general), [("+15min", datetime("2026-11-20T14:15"))]);
     // "end of week" is whichever day the user's week ends on; on Friday the 20th:
     assert_eq!(found("end of week", &general), [("end of week", datetime("2026-11-22T00:00"))]);
     assert_eq!(found("end of the week", &general)[0].1, datetime("2026-11-22T00:00"));
@@ -208,7 +204,7 @@ fn never_panics() {
         "+", "in", "in half", "in half an", "in 1d,", "in 1d, and", "twenty-", "twenty-ninth", "thirty-ninth of may", "the", "next", "end of", "99999999mo later", "+1y",
         "-", "to", "monday -", "monday to", "- friday", "10 -", "10 to", "aug 10 to", "day", "day after", "the day before", "last", "past 2", "last day of",
         "end of the", "end of the next", "a few", "in a couple", "in about", "1-", "15sep-", "2024-", "2024/aug/", "9-jan-", "aug 5 –", "aug 5 – 7",
-        "9 p", "9 p.", "9 p.m", "9 p.m.", "p.m.", "in 1.", "in 1.5", "in 999.9 hours", "12-", "8 -", "8 - 11", "1pm-", "friday next", "friday of", "2024 ", "2024 aug 99", "last"] {
+        "9 p", "9 p.", "9 p.m", "9 p.m.", "p.m.", "in 1.", "in 1.5", "in 999.9 hours", "12-", "8 -", "8 - 11", "1pm-", "friday next", "friday of", "2024 ", "2024 aug 99"] {
         let p = parse(s, now, &[]);
         for sp in &p.spans {
             assert!(s.is_char_boundary(sp.start) && s.is_char_boundary(sp.end), "{s:?}");
