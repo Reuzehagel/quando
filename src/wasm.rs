@@ -50,21 +50,31 @@ pub(crate) fn to_json(text: &str, p: &Parsed) -> String {
 #[cfg(target_arch = "wasm32")]
 #[unsafe(no_mangle)]
 pub extern "C" fn quando_alloc(len: usize) -> *mut u8 {
-    std::mem::ManuallyDrop::new(Vec::<u8>::with_capacity(len)).as_mut_ptr()
+    // a boxed slice holds exactly `len` bytes, which quando_free and quando_parse count on
+    Box::into_raw(vec![0u8; len].into_boxed_slice()).cast()
 }
 
+/// # Safety
+/// `ptr` and `len` come from one [`quando_alloc`] or [`quando_parse`] call, freed once.
 #[cfg(target_arch = "wasm32")]
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn quando_free(ptr: *mut u8, len: usize) {
-    drop(unsafe { Vec::from_raw_parts(ptr, 0, len) });
+    // SAFETY: the caller hands back a boxed slice of exactly `len` bytes, per the contract above.
+    drop(unsafe { Box::from_raw(std::ptr::slice_from_raw_parts_mut(ptr, len)) });
 }
 
 /// Reads the `len` UTF-8 bytes at `ptr`: the line, then each ignored text, split by newlines. Frees the input and
 /// returns a buffer of a little-endian u32 length and that many bytes of JSON, to free with [`quando_free`].
+///
+/// # Safety
+/// `ptr` and `len` come from one [`quando_alloc`] call, and the input is not used or freed after.
 #[cfg(target_arch = "wasm32")]
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn quando_parse(ptr: *mut u8, len: usize, year: i32, month: u8, day: u8, hour: u8, minute: u8) -> *mut u8 {
-    let input = unsafe { String::from_utf8_unchecked(Vec::from_raw_parts(ptr, len, len)) };
+    // SAFETY: quando_alloc's boxed slice is exactly `len` bytes, and this takes ownership of it.
+    let bytes = unsafe { Box::from_raw(std::ptr::slice_from_raw_parts_mut(ptr, len)) };
+    // JS's TextEncoder can't produce invalid UTF-8, but a bad caller turns into U+FFFD rather than undefined behaviour
+    let input = String::from_utf8_lossy(&bytes).into_owned();
     let mut lines = input.split('\n');
     let text = lines.next().unwrap_or("");
     let ignored: Vec<&str> = lines.collect();

@@ -17,3 +17,6 @@ crate-type = ["rlib", "cdylib"]
 [profile.release]
 lto = true
 opt-level = "s"
+
+[lints.clippy]
+undocumented_unsafe_blocks = "warn"
