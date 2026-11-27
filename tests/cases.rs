@@ -70,13 +70,47 @@ fn weekends() {
     assert_eq!(parse("pay rent this month", datetime(sunday), &[]).title, "pay rent");
 }
 
+/// "last" looks back from today, and an amount counts from the day it names.
+#[test]
+fn behind_and_from() {
+    let date = |s, now| parse(s, datetime(now), &[]).date.map(|d| (d.month, d.day));
+    let saturday = "2026-11-21T10:00";
+    assert_eq!(date("last friday", saturday), Some((11, 20)));
+    // today's own name is a week away, either way
+    assert_eq!(date("last saturday", saturday), Some((11, 14)));
+    assert_eq!(date("saturday", saturday), Some((11, 28)));
+    assert_eq!(date("last month", "2027-03-31T10:00"), Some((2, 28)));
+    assert_eq!(date("a month after 31 jan", saturday), Some((2, 28)));
+    assert_eq!(date("day before 1 march", "2028-01-10T10:00"), Some((2, 29)));
+}
+
+/// Edges the phrase files can't reach, since they share one `now`.
+#[test]
+fn edges() {
+    let at = |s, now| parse(s, datetime(now), &[]).date.map(|d| (d.year, d.month, d.day, d.hour));
+    // a day no month has yet: February is skipped
+    assert_eq!(at("the 30th", "2027-01-31T10:00"), Some((2027, 3, 30, 0)));
+    assert_eq!(at("end of february", "2028-01-10T10:00"), Some((2028, 2, 29, 0)));
+    // a date that is today stays today; the day before is next year's
+    assert_eq!(at("nov 20", "2026-11-20T14:00"), Some((2026, 11, 20, 0)));
+    assert_eq!(at("nov 19", "2026-11-20T14:00"), Some((2027, 11, 19, 0)));
+    // a time that is now has passed
+    assert_eq!(at("at 14:00", "2026-11-20T14:00"), Some((2026, 11, 21, 14)));
+    assert_eq!(at("at 23:59", "2026-12-31T23:58"), Some((2026, 12, 31, 23)));
+    assert_eq!(at("12am", "2026-12-31T14:00"), Some((2027, 1, 1, 0)));
+    assert_eq!(at("in 10 hours", "2026-12-31T14:00"), Some((2027, 1, 1, 0)));
+    assert_eq!(at("pay 2026-02-30", "2026-11-20T14:00"), None);
+}
+
 /// Anything typed gives an answer, never a panic: spans land on char boundaries whatever the bytes.
 #[test]
 fn never_panics() {
     let now = datetime("2026-11-20T14:00");
     for s in ["", " ", "#", "@", "!!!!", "at", "at at 5", "every", "every other", "in 3", "3/", "/12", "31/2/2026", "nov", "29 feb 2027",
         "every 99999999999 days", "at 99", "25:00", "12am", "0pm", "ünïcödé #lïst @tâg ! morgen", "日本語 #リスト 明日\u{3000}!!", "tomorrow’s", "a\u{3000}!!\u{3000}b",
-        "+", "in", "in half", "in half an", "in 1d,", "in 1d, and", "twenty-", "twenty-ninth", "thirty-ninth of may", "the", "next", "end of", "99999999mo later", "+1y"] {
+        "+", "in", "in half", "in half an", "in 1d,", "in 1d, and", "twenty-", "twenty-ninth", "thirty-ninth of may", "the", "next", "end of", "99999999mo later", "+1y",
+        "-", "to", "monday -", "monday to", "- friday", "10 -", "10 to", "aug 10 to", "day", "day after", "the day before", "last", "past 2", "last day of",
+        "end of the", "end of the next", "a few", "in a couple", "in about", "1-", "15sep-", "2024-", "2024/aug/", "9-jan-", "aug 5 –", "aug 5 – 7"] {
         let p = parse(s, now, &[]);
         for sp in &p.spans {
             assert!(s.is_char_boundary(sp.start) && s.is_char_boundary(sp.end), "{s:?}");

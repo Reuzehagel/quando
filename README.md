@@ -11,9 +11,12 @@ let p = quando::parse("call bank at 5 tomorrow #admin", now, &[]);
 
 ## What it reads
 
-- Days: `today`, `tomorrow`, `yesterday`, `tonight`, `this morning`, weekdays (`fri`, `friday`, `this wednesday`), `next friday` (that day in next week; weeks start on Monday), `this weekend`, `next weekend` (the Saturday; on a Sunday, this weekend is today), `the 5th` (the next 5th, today included), `the 5th of December`, `27 nov`, `nov 27th`, `12th of July`, `Dec. 21`, `27 nov 2027`, `Jan 1, 2020`, `3/12` (day first), `5/31` (month first when day first can't be a date), `3/12/2026`, `2014-04-18`.
-- Months: `in June`, `September 2012`, `9/2012`, `end of month`, `end of next month`, `end of July`, `end of this year`. A month name alone stays text: "call may".
-- Relative: `in 3 days`, `in five days`, `in a week`, `in 3 months`, `next week` (next Monday, as a date picker's button), `next month`, `next year`, `next 2 weeks`, `2 days later`, `3w later`, `3 weeks from now`, `after a year`, `5 days ago`. Months keep the day, clamped: a month on from 31 Jan is 28 Feb.
+- Days: `today`, `tomorrow`, `yesterday`, `tonight`, `this morning`, weekdays (`fri`, `friday`, `this wednesday`), `next friday` (that day in next week; weeks start on Monday), `this weekend`, `next weekend` (the Saturday; on a Sunday, this weekend is today), `the 5th` (the next 5th, today included), `the 5th of December`, `27 nov`, `nov 27th`, `12th of July`, `Dec. 21`, `27 nov 2027`, `Jan 1, 2020`, `3/12` (day first), `5/31` (month first when day first can't be a date), `3/12/2026`, `2014-04-18`, `2027/1/9`, `9-jan-2027`, `15sep`. A two-digit year counts only where the phrase ends and it can't be an hour: `3 aug 27` is 2027, "dec 5 50 invitations" is a count.
+- Months: `in June`, `September 2012`, `9/2012`, `2024-Aug`, `end of month`, `end of next month`, `end of July`, `end of this year`, `last day of July`. A month name alone stays text: "call may".
+- Behind: `last week`, `last month`, `last 2 weeks` (that long ago), `last friday` (the one before today). A task can be overdue.
+- From another day: `the day after tomorrow`, `2 days before friday`, `a week after 3/12`. Whole days only: "arrive 15 minutes before" stays text.
+- Ranges: `monday - friday`, `10pm to 2am`, `10 - 12 August`, `aug 10 to 22, 2027`, with a dash, `to`, `until`, `till` or `through`. The date is the start and the span runs to the end; the start borrows a year or a day only the end says. The end must be a date itself: "call monday to confirm" keeps its title.
+- Relative: `in 3 days`, `in five days`, `in a week`, `in 3 months`, `next week` (next Monday, as a date picker's button), `next month`, `next year`, `next 2 weeks`, `2 days later`, `3w later`, `3 weeks from now`, `after a year`, `5 days ago`, `in a few days` (3), `in a couple of weeks`, `in about 2 hours`. Months keep the day, clamped: a month on from 31 Jan is 28 Feb.
 - Moments: `now`, `in an hour`, `in half an hour`, `in 2h`, `within 20 minutes`, `+15min`, `in 1 day 2 hours`, `in 1d, 2hr, and 5min`: from now, to the minute. An amount needs `in`, `within`, `after`, `+`, `later`, `ago` or `from now`: "boil eggs 10 minutes" stays text.
 - Ordinal words: `May eighth`, `May twenty-fourth`, `the twenty-fourth of May`. Only beside a month: "read the second half" stays text.
 - Times: `at 5`, `5pm`, `10:30 am`, `15:30`, `05:30`, `at 12.30`, `noon`, `midnight`, and a bare hour after a day (`fri 9`). A bare 1 to 7 is the afternoon; `5am` and `05:30` mean what they say. A time on its own is today, or tomorrow once it has passed.
@@ -44,3 +47,4 @@ cargo build --release --target wasm32-unknown-unknown
 | parts joined, parts of the day, months, ISO dates | 251/569 (44%) |
 | next friday, weekends, the 5th | 260/569 (46%) |
 | amounts (half an hour, 2h, 1d 2hr 5min), ordinal words | 303/569 (53%) |
+| ranges, last week, the day after tomorrow, a few days, 9-jan-2027, two-digit years | 404/569 (71%) |

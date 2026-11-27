@@ -4,7 +4,7 @@
 use quando::{parse, DateTime, SpanKind};
 use serde_json::Value;
 
-const FLOOR: usize = 304;
+const FLOOR: usize = 404;
 
 #[test]
 fn bench() {
