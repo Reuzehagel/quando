@@ -36,6 +36,8 @@ pub enum SpanKind {
     List,
     Tag,
     Priority,
+    /// `~name`: quando finds the marker; which status it names is the caller's to match.
+    Status,
 }
 
 /// A part of the line that was read as something; `start..end` are byte offsets into the input.

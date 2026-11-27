@@ -59,7 +59,7 @@ parse("call bank at 5 tomorrow #admin", new Date()); // { title: "call bank", da
 - **Times:** `at 5`, `9 p.m.`, `15:30`, `noon`, `fri 9`, `tomorrow morning`, `11 at night`
 - **Ranges:** `monday - friday`, `10 - 12 August`, `tomorrow until 5pm`, `8 - 11pm`, `between 3:30-4:30pm`
 - **Repeats:** `daily`, `every monday 9`, `every other week`, `every weekday`, `after done`
-- **Markers:** `#list`, `@tag`, `!` to `!!!`
+- **Markers:** `#list`, `@tag`, `~status` (a span only: the caller knows its statuses), `!` to `!!!`
 
 It leaves alone what only looks like a date: "call may", "boil eggs 10 minutes", "call monday to confirm" (no range), "buy tomorrow's paper". `tests/cases.json` has every reading in full.
 

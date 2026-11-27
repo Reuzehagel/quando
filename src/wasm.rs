@@ -35,7 +35,7 @@ pub(crate) fn to_json(text: &str, p: &Parsed) -> String {
     let spans: Vec<String> = p.spans.iter().map(|s| {
         let kind = match s.kind {
             SpanKind::Date => "date", SpanKind::Repeat => "repeat", SpanKind::List => "list",
-            SpanKind::Tag => "tag", SpanKind::Priority => "priority",
+            SpanKind::Tag => "tag", SpanKind::Priority => "priority", SpanKind::Status => "status",
         };
         format!(r#"{{"start":{},"end":{},"kind":"{kind}"}}"#, utf16(s.start), utf16(s.end))
     }).collect();

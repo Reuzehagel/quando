@@ -110,6 +110,10 @@
     {"input": "9-jan-2027 tax", "want": {"title": "tax", "date": "2027-01-09", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 10, "kind": "date"}]}},
     {"input": "2027/1/9 tax", "want": {"title": "tax", "date": "2027-01-09", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 8, "kind": "date"}]}},
     {"input": "pay 1500 may rent", "want": {"title": "pay 1500 may rent", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
-    {"input": "wait...friday", "want": {"title": "wait...", "date": "2026-11-27", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 7, "end": 13, "kind": "date"}]}}
+    {"input": "wait...friday", "want": {"title": "wait...", "date": "2026-11-27", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 7, "end": 13, "kind": "date"}]}},
+    {"input": "call client ~waiting", "want": {"title": "call client", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{"start": 12, "end": 20, "kind": "status"}]}},
+    {"input": "~todo fix login #work @bug", "want": {"title": "fix login", "date": null, "list": "work", "tags": ["bug"], "priority": 0, "repeat": null, "spans": [{"start": 0, "end": 5, "kind": "status"}, {"start": 16, "end": 21, "kind": "list"}, {"start": 22, "end": 26, "kind": "tag"}]}},
+    {"input": "approx~5 ~ euro", "want": {"title": "approx~5 ~ euro", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}},
+    {"input": "call ~waiting", "ignored": ["~waiting"], "want": {"title": "call ~waiting", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": []}}
   ]
 }

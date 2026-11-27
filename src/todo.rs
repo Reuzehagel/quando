@@ -1,4 +1,4 @@
-// The todo layer: a typed line as a task. The title is what's left once the date, repeat, `#list`, `@tag` and `!` are read.
+// The todo layer: a typed line as a task. The title is what's left once the date, repeat, `#list`, `@tag`, `~status` and `!` are read.
 use crate::calendar::{civil_from_days, days_from_civil, weekday_of};
 use crate::date::{calendar_unit, read_date, resolve};
 use crate::words::{weekday, Text};
@@ -73,6 +73,9 @@ pub fn parse_with(text: &str, now: DateTime, ignored: &[&str], o: &Options) -> P
         if line.take(start, end, SpanKind::Tag) {
             tags.push(text[start + 1..end].to_string());
         }
+    }
+    for (start, end) in markers(text, '~') {
+        line.take(start, end, SpanKind::Status);
     }
     for (start, end) in bangs(text) {
         if line.take(start, end, SpanKind::Priority) {
@@ -149,7 +152,7 @@ impl Line<'_> {
     }
 }
 
-/// `#name` or `@name` at the start of the line or after a space: (start, end) of each.
+/// `#name`, `@name` or `~name` at the start of the line or after a space: (start, end) of each.
 fn markers(text: &str, sign: char) -> Vec<(usize, usize)> {
     let mut found = Vec::new();
     let mut prev = ' ';
