@@ -13,8 +13,9 @@ let p = quando::parse("call bank at 5 tomorrow #admin", now, &[]);
 
 - Days: `today`, `tomorrow`, `yesterday`, `tonight`, `this morning`, weekdays (`fri`, `friday`, `this wednesday`), `next friday` (that day in next week; weeks start on Monday), `this weekend`, `next weekend` (the Saturday; on a Sunday, this weekend is today), `the 5th` (the next 5th, today included), `the 5th of December`, `27 nov`, `nov 27th`, `12th of July`, `Dec. 21`, `27 nov 2027`, `Jan 1, 2020`, `3/12` (day first), `5/31` (month first when day first can't be a date), `3/12/2026`, `2014-04-18`.
 - Months: `in June`, `September 2012`, `9/2012`, `end of month`, `end of next month`, `end of July`, `end of this year`. A month name alone stays text: "call may".
-- Relative: `in 3 days`, `in five days`, `in a week`, `in 3 months`, `next week` (next Monday, as a date picker's button), `next month`, `next year`, `next 2 weeks`, `2 days later`, `3 weeks from now`, `after a year`, `5 days ago`. Months keep the day, clamped: a month on from 31 Jan is 28 Feb.
-- Moments: `now`, `in an hour`, `in 30 minutes`: from now, to the minute.
+- Relative: `in 3 days`, `in five days`, `in a week`, `in 3 months`, `next week` (next Monday, as a date picker's button), `next month`, `next year`, `next 2 weeks`, `2 days later`, `3w later`, `3 weeks from now`, `after a year`, `5 days ago`. Months keep the day, clamped: a month on from 31 Jan is 28 Feb.
+- Moments: `now`, `in an hour`, `in half an hour`, `in 2h`, `within 20 minutes`, `+15min`, `in 1 day 2 hours`, `in 1d, 2hr, and 5min`: from now, to the minute. An amount needs `in`, `within`, `after`, `+`, `later`, `ago` or `from now`: "boil eggs 10 minutes" stays text.
+- Ordinal words: `May eighth`, `May twenty-fourth`, `the twenty-fourth of May`. Only beside a month: "read the second half" stays text.
 - Times: `at 5`, `5pm`, `10:30 am`, `15:30`, `05:30`, `at 12.30`, `noon`, `midnight`, and a bare hour after a day (`fri 9`). A bare 1 to 7 is the afternoon; `5am` and `05:30` mean what they say. A time on its own is today, or tomorrow once it has passed.
 - Parts of the day: `tomorrow morning`, `6 in the morning`, `11 at night`, `11 tonight`, `this afternoon at 3`.
 - Parts join with spaces, commas, `at`, `on`, `of`, `by`, `before`, `after`: `Tuesday, 10 January`, `tomorrow by 5pm`, `at midnight on 12th August`. A leading `on`, `by` or `in` joins the date, so "dentist on friday" is titled "dentist" (chrono leaves it out; the benchmark counts that as agreeing).
@@ -42,3 +43,4 @@ cargo build --release --target wasm32-unknown-unknown
 | first parser | 120/569 (21%) |
 | parts joined, parts of the day, months, ISO dates | 251/569 (44%) |
 | next friday, weekends, the 5th | 260/569 (46%) |
+| amounts (half an hour, 2h, 1d 2hr 5min), ordinal words | 303/569 (53%) |

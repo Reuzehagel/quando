@@ -115,6 +115,8 @@ pub fn parse(text: &str, now: DateTime, ignored: &[&str]) -> Parsed {
         // "dentist on friday" is a dentist: the word leading into the date goes with it
         let lead = i > 0 && matches!(ws[i - 1].lower.as_str(), "on" | "by" | "in") && spaced(&line.rest, &ws[i - 1], &ws[i]);
         let start = if lead { ws[i - 1].start } else { ws[i].start };
+        // "+15min" keeps its sign
+        let start = if line.rest[..start].ends_with('+') { start - 1 } else { start };
         if possessive(&text[m.end..]) || !line.take(start, m.end, SpanKind::Date) {
             continue;
         }

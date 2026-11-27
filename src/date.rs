@@ -23,10 +23,27 @@ pub enum Day {
     /// "the 5th": the next 5th of a month, today included.
     Ordinal(u8),
     InDays(i64),
-    /// The same day of the month, clamped: a month on from 31 Jan is 28 Feb.
-    InMonths(i64),
-    /// "in an hour", "now": a moment, so it carries its own time.
-    InMinutes(i64),
+    /// "in 3 months", "in 1 day 2 hours", "now": months first (the same day, clamped: a month on from 31 Jan is
+    /// 28 Feb), then days, then minutes. With hours, minutes or seconds it is a moment, so it carries its own time.
+    Ahead(Amount),
+}
+
+#[derive(Clone, Copy, Default)]
+pub struct Amount {
+    months: i64,
+    days: i64,
+    minutes: i64,
+    moment: bool,
+}
+
+impl Amount {
+    fn times(self, n: i64) -> Amount {
+        Amount { months: self.months * n, days: self.days * n, minutes: self.minutes * n, moment: self.moment }
+    }
+
+    fn plus(self, o: Amount) -> Amount {
+        Amount { months: self.months + o.months, days: self.days + o.days, minutes: self.minutes + o.minutes, moment: self.moment || o.moment }
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -129,7 +146,7 @@ fn read_part(rest: &str, ws: &[Word], j: usize, m: &mut DateMatch) -> Option<usi
         *y = Some(n as i32);
         return Some(j + 1);
     }
-    if m.time.is_none() && !matches!(m.day, Some(Day::InMinutes(_))) {
+    if m.time.is_none() && !matches!(m.day, Some(Day::Ahead(Amount { moment: true, .. }))) {
         // after a day or a part of the day, a bare hour is a time: "fri 9", "tonight 8"
         if let Some((t, k)) = read_time(rest, ws, j, m.day.is_some() || m.part.is_some()) {
             m.time = Some(t);
@@ -173,17 +190,73 @@ fn part_word(w: &str) -> Option<Part> {
     })
 }
 
-/// "in 3 months", "next year": a count and a unit.
-fn ahead(n: i64, unit: &str) -> Option<Day> {
-    Some(match unit {
-        "day" | "days" => Day::InDays(n),
-        "week" | "weeks" => Day::InDays(7 * n),
-        "month" | "months" => Day::InMonths(n),
-        "year" | "years" => Day::InMonths(12 * n),
-        "hour" | "hours" | "hr" | "hrs" => Day::InMinutes(60 * n),
-        "minute" | "minutes" | "min" | "mins" => Day::InMinutes(n),
+/// One of a unit: "day", "hours", and the short forms "d", "h", "m", "w", "mo", "y".
+fn unit(w: &str) -> Option<Amount> {
+    let (months, days, minutes, moment) = match w {
+        "d" | "day" | "days" => (0, 1, 0, false),
+        "w" | "wk" | "wks" | "week" | "weeks" => (0, 7, 0, false),
+        "mo" | "month" | "months" => (1, 0, 0, false),
+        "y" | "yr" | "yrs" | "year" | "years" => (12, 0, 0, false),
+        "h" | "hr" | "hrs" | "hour" | "hours" => (0, 0, 60, true),
+        "m" | "min" | "mins" | "minute" | "minutes" => (0, 0, 1, true),
+        // seconds are below the minute: they make it a moment, and nothing more
+        "s" | "sec" | "secs" | "second" | "seconds" => (0, 0, 0, true),
         _ => return None,
-    })
+    };
+    Some(Amount { months, days, minutes, moment })
+}
+
+/// An amount of time: "3 days", "2h", "half an hour", "1d, 2hr, and 5min". Returns the word after it.
+fn read_amount(rest: &str, ws: &[Word], i: usize) -> Option<(Amount, usize)> {
+    let spaced_to = |j: usize| j < ws.len() && spaced(rest, &ws[j - 1], &ws[j]);
+    let at = |j: usize| (j < ws.len()).then(|| ws[j].lower.as_str());
+    let term = |j: usize| -> Option<(Amount, usize)> {
+        let w = at(j)?;
+        if w == "half" && spaced_to(j + 1) && matches!(at(j + 1), Some("an" | "a")) && spaced_to(j + 2) && at(j + 2) == Some("hour") {
+            return Some((Amount { minutes: 30, moment: true, ..Amount::default() }, j + 3));
+        }
+        // "2h", "15min", "3mo"
+        let digits = w.bytes().take_while(u8::is_ascii_digit).count();
+        if digits > 0 && digits < w.len() {
+            return Some((unit(&w[digits..])?.times(number(&w[..digits], 3)?.into()), j + 1));
+        }
+        let n = count(w)?;
+        Some((unit(at(j + 1).filter(|_| spaced_to(j + 1))?)?.times(n), j + 2))
+    };
+    let (mut total, mut k) = term(i)?;
+    // more terms after a space, a comma or "and"
+    loop {
+        let gap = rest.get(ws[k - 1].end..ws.get(k).map_or(rest.len(), |w| w.start)).unwrap_or("");
+        if k >= ws.len() || gap.is_empty() || !matches!(gap.trim(), "" | ",") {
+            break;
+        }
+        let j = if at(k) == Some("and") && spaced_to(k + 1) { k + 1 } else { k };
+        let Some((a, next)) = term(j) else { break };
+        (total, k) = (total.plus(a), next);
+    }
+    Some((total, k))
+}
+
+/// "first" to "thirty-first", as a day of the month. Returns the word after it.
+fn ordinal(rest: &str, ws: &[Word], i: usize) -> Option<(u8, usize)> {
+    const ORD: [&str; 20] = [
+        "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth",
+        "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth", "twentieth",
+    ];
+    let one = |w: &str| ORD.iter().position(|o| *o == w).map(|n| n as u8 + 1);
+    let w = ws.get(i)?.lower.as_str();
+    if w == "thirtieth" {
+        return Some((30, i + 1));
+    }
+    let tens = match w {
+        "twenty" => 20,
+        "thirty" => 30,
+        _ => return one(w).map(|d| (d, i + 1)),
+    };
+    // "twenty-fourth", "twenty fourth"
+    let next = ws.get(i + 1).filter(|n| matches!(rest[ws[i].end..n.start].trim(), "" | "-") && n.start > ws[i].end)?;
+    let d = tens + one(&next.lower).filter(|&d| d < 10)?;
+    (d <= 31).then_some((d, i + 2))
 }
 
 fn number(w: &str, max_len: usize) -> Option<u32> {
@@ -221,11 +294,11 @@ fn read_day_any(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
     let sep = |j: usize, s: &str| j < ws.len() && &rest[ws[j - 1].end..ws[j].start] == s;
     let w = at(i)?;
     match w {
-        "now" => return Some((Day::InMinutes(0), i + 1)),
+        "now" => return Some((Day::Ahead(Amount { moment: true, ..Amount::default() }), i + 1)),
         "today" => return Some((Day::InDays(0), i + 1)),
         "tomorrow" => return Some((Day::InDays(1), i + 1)),
         "yesterday" => return Some((Day::InDays(-1), i + 1)),
-        "in" | "after" if spaced_to(i + 1) && spaced_to(i + 2) => return Some((ahead(count(at(i + 1)?)?, at(i + 2)?)?, i + 3)),
+        "in" | "within" | "after" if spaced_to(i + 1) => return read_amount(rest, ws, i + 1).map(|(a, k)| (Day::Ahead(a), k)),
         // "next week" is next Monday (on a Sunday, tomorrow); "in a week" is seven days
         "this" if spaced_to(i + 1) => {
             let w = at(i + 1)?;
@@ -245,29 +318,26 @@ fn read_day_any(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
             "weekend" => return Some((Day::Weekend(1), i + 2)),
             w if weekday(w).is_some() => return Some((Day::NextWeekday(weekday(w)?), i + 2)),
             "day" => return Some((Day::InDays(1), i + 2)),
-            "month" | "year" | "hour" => return Some((ahead(1, at(i + 1)?)?, i + 2)),
+            w @ ("month" | "year" | "hour") => return Some((Day::Ahead(unit(w)?), i + 2)),
             // "next 2 weeks"
-            n if spaced_to(i + 2) => return Some((ahead(count(n)?, at(i + 2)?)?, i + 3)),
-            _ => return None,
+            _ => return read_amount(rest, ws, i + 1).map(|(a, k)| (Day::Ahead(a), k)),
         },
         "end" if spaced_to(i + 1) && at(i + 1) == Some("of") && spaced_to(i + 2) => return end_of(rest, ws, i + 2),
         _ => {}
     }
-    // "5 days ago", "2 days later", "3 weeks from now"
-    if let Some(n) = count(w)
-        && spaced_to(i + 1)
-        && spaced_to(i + 2)
-    {
-        let (sign, k) = match at(i + 2)? {
-            "ago" => (-1, i + 3),
-            "later" => (1, i + 3),
-            "from" if spaced_to(i + 3) && at(i + 3) == Some("now") => (1, i + 4),
-            _ => (0, 0),
+    // "+15min", "5 days ago", "2 days later", "3 weeks from now"; a bare "10 minutes" is a length, not a date
+    if let Some((a, k)) = read_amount(rest, ws, i) {
+        if rest[..ws[i].start].ends_with('+') {
+            return Some((Day::Ahead(a), k));
+        }
+        let (sign, k) = match at(k).filter(|_| spaced_to(k)) {
+            Some("ago") => (-1, k + 1),
+            Some("later") => (1, k + 1),
+            Some("from") if spaced_to(k + 1) && at(k + 1) == Some("now") => (1, k + 2),
+            _ => (0, k),
         };
-        if sign != 0
-            && let Some(d) = ahead(sign * n, at(i + 1)?)
-        {
-            return Some((d, k));
+        if sign != 0 {
+            return Some((Day::Ahead(a.times(sign)), k));
         }
     }
     if let Some(d) = weekday(w) {
@@ -280,15 +350,19 @@ fn read_day_any(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
         if let Some(day) = next.and_then(day_number) {
             return Some((Day::On { year: None, month: m, day }, i + 2));
         }
+        // "May eighth", "May twenty-fourth"
+        if let Some((day, k)) = next.and_then(|_| ordinal(rest, ws, i + 1)) {
+            return Some((Day::On { year: None, month: m, day }, k));
+        }
         if let Some(y) = next.and_then(year) {
             return Some((Day::Month { year: Some(y), month: m }, i + 2));
         }
         let after_in = i > 0 && ws[i - 1].lower == "in" && spaced(rest, &ws[i - 1], &ws[i]);
         return after_in.then_some((Day::Month { year: None, month: m }, i + 1));
     }
-    // "27 nov", "12th of July"
-    if let Some(day) = day_number(w) {
-        let k = if spaced_to(i + 1) && at(i + 1) == Some("of") { i + 2 } else { i + 1 };
+    // "27 nov", "12th of July", "twenty-fourth of May"
+    if let Some((day, k)) = day_number(w).map(|d| (d, i + 1)).or_else(|| ordinal(rest, ws, i)) {
+        let k = if spaced_to(k) && at(k) == Some("of") { k + 1 } else { k };
         if let Some(m) = spaced_to(k).then(|| at(k).and_then(month)).flatten() {
             return Some((Day::On { year: None, month: m, day }, k + 1));
         }
@@ -402,11 +476,17 @@ fn months_on(now: DateTime, n: i64) -> (i32, u8) {
     (months.div_euclid(12) as i32, (months.rem_euclid(12) + 1) as u8)
 }
 
+/// The day an amount lands on, minutes aside: months first, the same day clamped, then days.
+fn ahead_days(now: DateTime, a: Amount) -> i64 {
+    let (y, mo) = months_on(now, a.months);
+    days_from_civil(y, mo, now.day.min(last_day(y, mo))) + a.days
+}
+
 /// The phrase as a moment, and whether it has a time.
 pub fn resolve(m: DateMatch, now: DateTime) -> (DateTime, bool) {
     let today = days_from_civil(now.year, now.month, now.day);
-    if let Some(Day::InMinutes(n)) = m.day {
-        let at = today * 1440 + now.hour as i64 * 60 + now.minute as i64 + n;
+    if let Some(Day::Ahead(a @ Amount { moment: true, .. })) = m.day {
+        let at = ahead_days(now, a) * 1440 + now.hour as i64 * 60 + now.minute as i64 + a.minutes;
         let (year, month, day) = civil_from_days(at.div_euclid(1440));
         let (hour, minute) = ((at.rem_euclid(1440) / 60) as u8, (at.rem_euclid(60)) as u8);
         return (DateTime { year, month, day, hour, minute }, true);
@@ -439,11 +519,7 @@ pub fn resolve(m: DateMatch, now: DateTime) -> (DateTime, bool) {
             .map(|(y, mo)| days_from_civil(y, mo, d))
             .find(|&x| x >= today)
             .unwrap_or(today),
-        Some(Day::InMinutes(_)) => unreachable!("resolved above, with its own time"),
-        Some(Day::InMonths(n)) => {
-            let (y, mo) = months_on(now, n);
-            days_from_civil(y, mo, now.day.min(last_day(y, mo)))
-        }
+        Some(Day::Ahead(a)) => ahead_days(now, a),
         // "fri" on a Friday means next week
         Some(Day::Weekday(d)) => today + ((d as i64 - weekday_of(today) as i64 + 6).rem_euclid(7) + 1),
         Some(Day::On { year: Some(y), month, day }) => days_from_civil(y, month, day),

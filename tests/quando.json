@@ -37,6 +37,17 @@
     { "input": "dentist Tuesday, 10 January", "want": { "title": "dentist", "date": "2027-01-10", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 8, "end": 27, "kind": "date" }] } },
     { "input": "weigh at 6.5 kilograms", "want": { "title": "weigh at 6.5 kilograms", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [] } },
     { "input": "follow up in five days", "want": { "title": "follow up", "date": "2026-11-25", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 10, "end": 22, "kind": "date" }] } },
+    { "input": "call back in half an hour", "want": { "title": "call back", "date": "2026-11-20T14:30", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 10, "end": 25, "kind": "date" }] } },
+    { "input": "stretch in 2h", "want": { "title": "stretch", "date": "2026-11-20T16:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 8, "end": 13, "kind": "date" }] } },
+    { "input": "in 1 day 2 hours", "want": { "title": "", "date": "2026-11-21T16:00", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 0, "end": 16, "kind": "date" }] } },
+    { "input": "in 1d, 2hr, and 5min", "want": { "title": "", "date": "2026-11-21T16:05", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 0, "end": 20, "kind": "date" }] } },
+    { "input": "+15min", "want": { "title": "", "date": "2026-11-20T14:15", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 0, "end": 6, "kind": "date" }] } },
+    { "input": "check oven within 20 minutes", "want": { "title": "check oven", "date": "2026-11-20T14:20", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 11, "end": 28, "kind": "date" }] } },
+    { "input": "3w later", "want": { "title": "", "date": "2026-12-11", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 0, "end": 8, "kind": "date" }] } },
+    { "input": "boil eggs 10 minutes", "want": { "title": "boil eggs 10 minutes", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [] } },
+    { "input": "birthday May eighth", "want": { "title": "birthday", "date": "2027-05-08", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 9, "end": 19, "kind": "date" }] } },
+    { "input": "the twenty-fourth of May", "want": { "title": "", "date": "2027-05-24", "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [{ "start": 0, "end": 24, "kind": "date" }] } },
+    { "input": "read the second half", "want": { "title": "read the second half", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [] } },
     { "input": "pay 31/2", "want": { "title": "pay 31/2", "date": null, "list": null, "tags": [], "priority": 0, "repeat": null, "spans": [] } }
   ]
 }
