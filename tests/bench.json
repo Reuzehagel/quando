@@ -1,0 +1,4312 @@
+{
+ "now": "2026-11-20T14:00",
+ "source": "chrono-node test/en (MIT, Wanasit Tanakitrungruang)",
+ "cases": [
+  {
+   "input": "Something happen on 2014-04-18 13:00 - 16:00 as",
+   "date": "2014-04-18T13:00",
+   "span": [
+    20,
+    44
+   ]
+  },
+  {
+   "input": "between 3:30-4:30pm",
+   "date": "2026-11-20T15:30",
+   "span": [
+    8,
+    19
+   ]
+  },
+  {
+   "input": "9:00 PST",
+   "date": "2026-11-20T18:00",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "Want to meet for dinner (5pm EST)?",
+   "date": "2026-11-20T23:00",
+   "span": [
+    25,
+    33
+   ]
+  },
+  {
+   "input": "between '3:30-4:30pm'",
+   "date": "2026-11-20T15:30",
+   "span": [
+    9,
+    20
+   ]
+  },
+  {
+   "input": "The date is '2014-04-18'",
+   "date": "2014-04-18",
+   "span": [
+    13,
+    23
+   ]
+  },
+  {
+   "input": "Tuesday",
+   "date": "2026-11-24",
+   "span": [
+    0,
+    7
+   ]
+  },
+  {
+   "input": "6/10/2018",
+   "date": "2018-10-06",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "174 November 1,2001- March 31,2002",
+   "date": "2001-11-01",
+   "span": [
+    4,
+    34
+   ]
+  },
+  {
+   "input": "...Thursday, December 15, 2011 Best Available Rate",
+   "date": "2011-12-15",
+   "span": [
+    3,
+    30
+   ]
+  },
+  {
+   "input": "SUN 15SEP 11:05 AM - 12:50 PM",
+   "date": "2027-09-15T11:05",
+   "span": [
+    0,
+    29
+   ]
+  },
+  {
+   "input": "FRI 13SEP 1:29 PM - FRI 13SEP 3:29 PM",
+   "date": "2027-09-13T13:29",
+   "span": [
+    0,
+    37
+   ]
+  },
+  {
+   "input": "9:00 AM to 5:00 PM, Tuesday, 20 May 2013",
+   "date": "2013-05-20T09:00",
+   "span": [
+    0,
+    40
+   ]
+  },
+  {
+   "input": "Monday afternoon to last night",
+   "date": "2026-11-16",
+   "span": [
+    0,
+    30
+   ]
+  },
+  {
+   "input": "07-27-2022, 02:00 AM",
+   "date": "2022-07-27T02:00",
+   "span": [
+    0,
+    20
+   ]
+  },
+  {
+   "input": "The Deadline is now",
+   "date": "2026-11-20T14:00",
+   "span": [
+    16,
+    19
+   ]
+  },
+  {
+   "input": "The Deadline is now, without implicit local timezone",
+   "date": "2026-11-20T14:00",
+   "span": [
+    16,
+    19
+   ]
+  },
+  {
+   "input": "The Deadline is today",
+   "date": "2026-11-20",
+   "span": [
+    16,
+    21
+   ]
+  },
+  {
+   "input": "The Deadline is Tomorrow",
+   "date": "2026-11-21",
+   "span": [
+    16,
+    24
+   ]
+  },
+  {
+   "input": "The Deadline was yesterday",
+   "date": "2026-11-19",
+   "span": [
+    17,
+    26
+   ]
+  },
+  {
+   "input": "The Deadline was last night",
+   "date": "2026-11-19",
+   "span": [
+    17,
+    27
+   ]
+  },
+  {
+   "input": "The Deadline was this morning",
+   "date": "2026-11-20",
+   "span": [
+    17,
+    29
+   ]
+  },
+  {
+   "input": "The Deadline was this afternoon",
+   "date": "2026-11-20",
+   "span": [
+    17,
+    31
+   ]
+  },
+  {
+   "input": "The Deadline was this evening",
+   "date": "2026-11-20",
+   "span": [
+    17,
+    29
+   ]
+  },
+  {
+   "input": "The Deadline is midnight",
+   "date": "2026-11-21T00:00",
+   "span": [
+    16,
+    24
+   ]
+  },
+  {
+   "input": "The Deadline was midnight",
+   "date": "2026-11-21T00:00",
+   "span": [
+    17,
+    25
+   ]
+  },
+  {
+   "input": "The Deadline is today 5PM",
+   "date": "2026-11-20T17:00",
+   "span": [
+    16,
+    25
+   ]
+  },
+  {
+   "input": "Tomorrow at noon",
+   "date": "2026-11-21T12:00",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "The event is today - next friday",
+   "date": "2026-11-20",
+   "span": [
+    13,
+    32
+   ]
+  },
+  {
+   "input": "annual leave from today morning to tomorrow",
+   "date": "2026-11-20",
+   "span": [
+    18,
+    43
+   ]
+  },
+  {
+   "input": "annual leave from today to tomorrow afternoon",
+   "date": "2026-11-20",
+   "span": [
+    18,
+    45
+   ]
+  },
+  {
+   "input": "tonight",
+   "date": "2026-11-20",
+   "span": [
+    0,
+    7
+   ]
+  },
+  {
+   "input": "tonight 8pm",
+   "date": "2026-11-20T20:00",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "tonight at 8",
+   "date": "2026-11-20T20:00",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "tomorrow before 4pm",
+   "date": "2026-11-21T16:00",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "tomorrow after 4pm",
+   "date": "2026-11-21T16:00",
+   "span": [
+    0,
+    18
+   ]
+  },
+  {
+   "input": "thurs",
+   "date": "2026-11-26",
+   "span": [
+    0,
+    5
+   ]
+  },
+  {
+   "input": "this evening",
+   "date": "2026-11-20",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "yesterday afternoon",
+   "date": "2026-11-19",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "tomorrow morning",
+   "date": "2026-11-21",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "this afternoon at 3",
+   "date": "2026-11-20T15:00",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "at midnight on 12th August",
+   "date": "2027-08-12T00:00",
+   "span": [
+    3,
+    26
+   ]
+  },
+  {
+   "input": "Jan 1, 2020 Morning UTC",
+   "date": "2020-01-01",
+   "span": [
+    0,
+    23
+   ]
+  },
+  {
+   "input": "Jan 1, 2020 Evening JST",
+   "date": "2020-01-01",
+   "span": [
+    0,
+    23
+   ]
+  },
+  {
+   "input": "notoday",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "tdtmr",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "xyesterday",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "nowhere",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "noway",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "knowledge",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "mar",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "jan",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "do I have the money",
+   "date": "2026-12-20",
+   "span": [
+    10,
+    19
+   ]
+  },
+  {
+   "input": "I may by here. May the force be with you. Theresa may become PM soon.",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "XXX is set to be released in the second half of 2025",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "Let's finish this before this 2013-2-7.",
+   "date": "2013-02-07",
+   "span": [
+    30,
+    38
+   ]
+  },
+  {
+   "input": "1994-11-05T08:15:30-05:30",
+   "date": "1994-11-05T14:45",
+   "span": [
+    0,
+    25
+   ]
+  },
+  {
+   "input": "1994-11-05T13:15:30Z",
+   "date": "1994-11-05T14:15",
+   "span": [
+    0,
+    20
+   ]
+  },
+  {
+   "input": "- 1994-11-05T13:15:30Z",
+   "date": "1994-11-05T14:15",
+   "span": [
+    2,
+    22
+   ]
+  },
+  {
+   "input": "2016-05-07T23:45:00.487+01:00",
+   "date": "2016-05-08T00:45",
+   "span": [
+    0,
+    29
+   ]
+  },
+  {
+   "input": "1994-11-05T13:15:30",
+   "date": "1994-11-05T13:15",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "2015-07-31T12:00:00",
+   "date": "2015-07-31T12:00",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "2024-03-10T10:00:00.123456+05:30",
+   "date": "2024-03-10T10:00",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "2024-03-10T10:00:00.12345-05:00",
+   "date": "2026-11-21T10:00",
+   "span": [
+    11,
+    31
+   ]
+  },
+  {
+   "input": "2024-03-10T10:00:00.123456789Z",
+   "date": "2024-03-10T10:00",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "2 weeks after yesterday",
+   "date": "2026-12-03",
+   "span": [
+    0,
+    23
+   ]
+  },
+  {
+   "input": "2 months before 02/02",
+   "date": "2026-12-02",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "2 days after next Friday",
+   "date": "2026-11-29",
+   "span": [
+    0,
+    24
+   ]
+  },
+  {
+   "input": "September 2012",
+   "date": "2012-09-01",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "Sept 2012",
+   "date": "2012-09-01",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "Sep 2012",
+   "date": "2012-09-01",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "Sep. 2012",
+   "date": "2012-09-01",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "Sep-2012",
+   "date": "2012-09-01",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "in June of 2022",
+   "date": "2022-06-01",
+   "span": [
+    3,
+    15
+   ]
+  },
+  {
+   "input": "Statement of comprehensive income for the year ended Dec. 2021",
+   "date": "2027-11-20",
+   "span": [
+    38,
+    46
+   ]
+  },
+  {
+   "input": "In January",
+   "date": "2027-01-01",
+   "span": [
+    3,
+    10
+   ]
+  },
+  {
+   "input": "in Jan",
+   "date": "2027-01-01",
+   "span": [
+    3,
+    6
+   ]
+  },
+  {
+   "input": "May",
+   "date": "2027-05-01",
+   "span": [
+    0,
+    3
+   ]
+  },
+  {
+   "input": "From May to December",
+   "date": "2027-05-01",
+   "span": [
+    5,
+    20
+   ]
+  },
+  {
+   "input": "From December to May",
+   "date": "2026-12-01",
+   "span": [
+    5,
+    20
+   ]
+  },
+  {
+   "input": "From May to December, 2022",
+   "date": "2022-05-01",
+   "span": [
+    5,
+    26
+   ]
+  },
+  {
+   "input": "From December to May 2022",
+   "date": "2021-12-01",
+   "span": [
+    5,
+    25
+   ]
+  },
+  {
+   "input": "From December to May 2020",
+   "date": "2019-12-01",
+   "span": [
+    5,
+    25
+   ]
+  },
+  {
+   "input": "From December to May 2025",
+   "date": "2024-12-01",
+   "span": [
+    5,
+    25
+   ]
+  },
+  {
+   "input": "in December",
+   "date": "2026-12-01",
+   "span": [
+    3,
+    11
+   ]
+  },
+  {
+   "input": "in May",
+   "date": "2027-05-01",
+   "span": [
+    3,
+    6
+   ]
+  },
+  {
+   "input": "The date is Sep 2012 is the date",
+   "date": "2012-09-01",
+   "span": [
+    12,
+    20
+   ]
+  },
+  {
+   "input": "By Angie Mar November 2019",
+   "date": "2019-11-01",
+   "span": [
+    13,
+    26
+   ]
+  },
+  {
+   "input": "9/2012",
+   "date": "2012-09-01",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "09/2012",
+   "date": "2012-09-01",
+   "span": [
+    0,
+    7
+   ]
+  },
+  {
+   "input": "Aug 96",
+   "date": "1996-08-01",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "96 Aug 96",
+   "date": "1996-08-01",
+   "span": [
+    3,
+    9
+   ]
+  },
+  {
+   "input": "end of July",
+   "date": "2027-07-31",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "last day of July",
+   "date": "2027-07-31",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "end of February 2024",
+   "date": "2024-02-29",
+   "span": [
+    0,
+    20
+   ]
+  },
+  {
+   "input": "end of October next year",
+   "date": "2027-10-31",
+   "span": [
+    0,
+    24
+   ]
+  },
+  {
+   "input": "end of october 2032",
+   "date": "2032-10-31",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "The mountain may not move",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "May not be correct",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "2024 Aug",
+   "date": "2024-08-01",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "2024 August",
+   "date": "2024-08-01",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "2024-Aug",
+   "date": "2024-08-01",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "2012 January",
+   "date": "2012-01-01",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "2023 Sept",
+   "date": "2023-09-01",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "2024-August",
+   "date": "2024-08-01",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "2024/August",
+   "date": "2024-08-01",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "2024 AD August",
+   "date": "2024-08-01",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "10 August 2012",
+   "date": "2012-08-10",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "3rd Feb 82",
+   "date": "1982-02-03",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "Sun 15Sep",
+   "date": "2027-09-15",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "SUN 15SEP",
+   "date": "2027-09-15",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "The Deadline is 10 August",
+   "date": "2027-08-10",
+   "span": [
+    16,
+    25
+   ]
+  },
+  {
+   "input": "The Deadline is Tuesday, 10 January",
+   "date": "2027-01-10",
+   "span": [
+    16,
+    35
+   ]
+  },
+  {
+   "input": "The Deadline is Tue, 10 January",
+   "date": "2027-01-10",
+   "span": [
+    16,
+    31
+   ]
+  },
+  {
+   "input": "31st March, 2016",
+   "date": "2016-03-31",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "23rd february, 2016",
+   "date": "2016-02-23",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "10-August 2012",
+   "date": "2012-08-10",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "10-August-2012",
+   "date": "2012-08-10",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "10/August 2012",
+   "date": "2012-08-10",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "10/August/2012",
+   "date": "2012-08-10",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "09-JAN-2017",
+   "date": "2017-01-09",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "09/JAN/2017",
+   "date": "2017-01-09",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "21-APR-16",
+   "date": "2016-04-21",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "10 - 22 August 2012",
+   "date": "2012-08-10",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "10 to 22 August 2012",
+   "date": "2012-08-10",
+   "span": [
+    0,
+    20
+   ]
+  },
+  {
+   "input": "10 August - 12 September",
+   "date": "2027-08-10",
+   "span": [
+    0,
+    24
+   ]
+  },
+  {
+   "input": "10 August - 12 September 2013",
+   "date": "2013-08-10",
+   "span": [
+    0,
+    29
+   ]
+  },
+  {
+   "input": "10 August 2013 - 12 September",
+   "date": "2013-08-10",
+   "span": [
+    0,
+    29
+   ]
+  },
+  {
+   "input": "17 August 2013 to 19 August 2013",
+   "date": "2013-08-17",
+   "span": [
+    0,
+    32
+   ]
+  },
+  {
+   "input": "12th of July at 19:00",
+   "date": "2027-07-12T19:00",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "5 May 12:00",
+   "date": "2027-05-05T12:00",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "7 May 11:00",
+   "date": "2027-05-07T11:00",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "Twenty-fourth of May",
+   "date": "2027-05-24",
+   "span": [
+    0,
+    20
+   ]
+  },
+  {
+   "input": "Eighth to eleventh May 2010",
+   "date": "2010-05-08",
+   "span": [
+    0,
+    27
+   ]
+  },
+  {
+   "input": "24th October, 9 am",
+   "date": "2027-10-24T09:00",
+   "span": [
+    0,
+    18
+   ]
+  },
+  {
+   "input": "24th October, 9 pm",
+   "date": "2027-10-24T21:00",
+   "span": [
+    0,
+    18
+   ]
+  },
+  {
+   "input": "24 October, 9 pm",
+   "date": "2027-10-24T21:00",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "24 October, 9 p.m.",
+   "date": "2027-10-24T21:00",
+   "span": [
+    0,
+    18
+   ]
+  },
+  {
+   "input": "24 October 10 o clock",
+   "date": "2027-10-24T10:00",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "03 Aug 96",
+   "date": "1996-08-03",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "3 Aug 96",
+   "date": "1996-08-03",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "9 Aug 96",
+   "date": "1996-08-09",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "22-23 Feb at 7pm",
+   "date": "2027-02-22T19:00",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "17 August 2013 - 19 August 2013",
+   "date": "2013-08-17",
+   "span": [
+    0,
+    31
+   ]
+  },
+  {
+   "input": "32 August 2014",
+   "date": "2014-08-01",
+   "span": [
+    3,
+    14
+   ]
+  },
+  {
+   "input": "29 February 2014",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "32 August",
+   "date": "2027-08-01",
+   "span": [
+    3,
+    9
+   ]
+  },
+  {
+   "input": "29 February",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "Jan 1 3000, 9:30",
+   "date": "3000-01-01T09:30",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "Jan 1 2025, 9:30",
+   "date": "2025-01-01T09:30",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "5. March 2019, 03:26 PM EDT",
+   "date": "2019-03-01T20:26",
+   "span": [
+    3,
+    27
+   ]
+  },
+  {
+   "input": "23. October 2026",
+   "date": "2026-10-01T23:00",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "The Deadline is 10. August",
+   "date": "2027-08-01T10:00",
+   "span": [
+    16,
+    26
+   ]
+  },
+  {
+   "input": "10. - 22. August 2012",
+   "date": "2012-08-01T22:00",
+   "span": [
+    6,
+    21
+   ]
+  },
+  {
+   "input": "She is getting married soon (July 2017).",
+   "date": "2017-07-01",
+   "span": [
+    29,
+    38
+   ]
+  },
+  {
+   "input": "She is leaving in August.",
+   "date": "2027-08-01",
+   "span": [
+    18,
+    24
+   ]
+  },
+  {
+   "input": "I am arriving sometime in August, 2012, probably.",
+   "date": "2012-08-01",
+   "span": [
+    26,
+    38
+   ]
+  },
+  {
+   "input": "August 10, 2012",
+   "date": "2012-08-10",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "Nov 12, 2011",
+   "date": "2011-11-12",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "The Deadline is August 10",
+   "date": "2027-08-10",
+   "span": [
+    16,
+    25
+   ]
+  },
+  {
+   "input": "The Deadline is August 10 2555 BE",
+   "date": "2012-08-10",
+   "span": [
+    16,
+    33
+   ]
+  },
+  {
+   "input": "The Deadline is August 10, 345 BC",
+   "date": "-345-08-10",
+   "span": [
+    16,
+    33
+   ]
+  },
+  {
+   "input": "The Deadline is August 10, 8 AD",
+   "date": "8-08-10",
+   "span": [
+    16,
+    31
+   ]
+  },
+  {
+   "input": "The Deadline is Tuesday, January 10",
+   "date": "2026-11-24",
+   "span": [
+    16,
+    24
+   ]
+  },
+  {
+   "input": "Sun, Mar. 6, 2016",
+   "date": "2016-03-06",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "Sun, March 6, 2016",
+   "date": "2016-03-06",
+   "span": [
+    0,
+    18
+   ]
+  },
+  {
+   "input": "Sun., March 6, 2016",
+   "date": "2016-03-06",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "Sunday, March 6, 2016",
+   "date": "2016-03-06",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "Sunday, March, 6th 2016",
+   "date": "2016-03-06",
+   "span": [
+    0,
+    23
+   ]
+  },
+  {
+   "input": "Wed, Jan 20th, 2016",
+   "date": "2016-01-20",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "Dec. 21",
+   "date": "2026-12-21",
+   "span": [
+    0,
+    7
+   ]
+  },
+  {
+   "input": "August 10 - 22, 2012",
+   "date": "2012-08-10",
+   "span": [
+    0,
+    20
+   ]
+  },
+  {
+   "input": "August 10 to 22, 2012",
+   "date": "2012-08-10",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "August 10 - November 12",
+   "date": "2027-08-10",
+   "span": [
+    0,
+    23
+   ]
+  },
+  {
+   "input": "Aug 10 to Nov 12",
+   "date": "2027-08-10",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "Aug 10 - Nov 12, 2013",
+   "date": "2013-08-10",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "Aug 10 - Nov 12, 2011",
+   "date": "2011-08-10",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "May eighth, 2010",
+   "date": "2010-05-08",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "May twenty-fourth",
+   "date": "2027-05-24",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "May eighth - tenth, 2010",
+   "date": "2010-05-08",
+   "span": [
+    0,
+    24
+   ]
+  },
+  {
+   "input": "January 1st",
+   "date": "2027-01-01",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "Aug 9, 96",
+   "date": "1996-08-09",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "Aug 9 96",
+   "date": "1996-08-09",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "August 32, 2014",
+   "date": "2032-08-01",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "February 29, 2014",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "August 32",
+   "date": "2032-08-01",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "February 29",
+   "date": "2029-02-01",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "February 151998",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "January 32, 2021",
+   "date": "2032-01-01",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "May 32, 2021",
+   "date": "2032-05-01",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "May 99, 2021",
+   "date": "1999-05-01",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "May 33,2021",
+   "date": "2033-05-01",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "The event is on May 32, 2021 now",
+   "date": "2032-05-01",
+   "span": [
+    16,
+    22
+   ]
+  },
+  {
+   "input": "this week",
+   "date": "2026-11-20",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "this month",
+   "date": "2026-11-01",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "this year",
+   "date": "2026-01-01",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "end of the month",
+   "date": "2026-11-30",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "last day of the month",
+   "date": "2026-11-30",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "end of month",
+   "date": "2026-11-30",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "last day of month",
+   "date": "2026-11-30",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "end of next week",
+   "date": "2026-11-23",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "end of next month",
+   "date": "2026-12-31",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "last day of next month",
+   "date": "2026-12-31",
+   "span": [
+    0,
+    22
+   ]
+  },
+  {
+   "input": "end of next year",
+   "date": "2027-12-31",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "end of this week",
+   "date": "2026-11-21",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "last day of last week",
+   "date": "2026-11-14",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "end of the next week",
+   "date": "2026-11-23",
+   "span": [
+    0,
+    20
+   ]
+  },
+  {
+   "input": "end of last month",
+   "date": "2026-10-31",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "end of this year",
+   "date": "2026-12-31",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "end of the past year",
+   "date": "2025-12-31",
+   "span": [
+    0,
+    20
+   ]
+  },
+  {
+   "input": "last week",
+   "date": "2026-11-13",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "lastmonth",
+   "date": "2026-10-20",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "last day",
+   "date": "2026-11-19",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "last month",
+   "date": "2026-10-20",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "past week",
+   "date": "2026-11-13",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "next hour",
+   "date": "2026-11-20T15:00",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "next week",
+   "date": "2026-11-23",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "next day",
+   "date": "2026-11-21",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "next month",
+   "date": "2026-12-20",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "next year",
+   "date": "2027-11-20",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "next quarter",
+   "date": "2026-11-20",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "next qtr",
+   "date": "2026-11-20",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "next two quarter",
+   "date": "2026-11-20",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "after this year",
+   "date": "2027-11-20",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "Connect back after this year",
+   "date": "2027-11-20",
+   "span": [
+    13,
+    28
+   ]
+  },
+  {
+   "input": "04/2016",
+   "date": "2016-04-01",
+   "span": [
+    0,
+    7
+   ]
+  },
+  {
+   "input": "8/10/2012",
+   "date": "2012-10-08",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": ": 8/1/2012",
+   "date": "2012-01-08",
+   "span": [
+    2,
+    10
+   ]
+  },
+  {
+   "input": "The Deadline is 8/10/2012",
+   "date": "2012-10-08",
+   "span": [
+    16,
+    25
+   ]
+  },
+  {
+   "input": "The Deadline is Tuesday 11/3/2015",
+   "date": "2015-03-11",
+   "span": [
+    16,
+    33
+   ]
+  },
+  {
+   "input": "2/28/2014",
+   "date": "2014-02-28",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "Friday 12-30-16",
+   "date": "2016-12-30",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "Friday 30-12-16",
+   "date": "2016-12-30",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "8/Oct/2012",
+   "date": "2012-10-08",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "06/Nov/2023",
+   "date": "2023-11-06",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "06/Nov/2023:06:36:02",
+   "date": "2023-11-06T06:36",
+   "span": [
+    0,
+    20
+   ]
+  },
+  {
+   "input": "06/Nov/2023:06:36:02 +0200",
+   "date": "2023-11-06T05:36",
+   "span": [
+    0,
+    26
+   ]
+  },
+  {
+   "input": "The event is going ahead (04/2016)",
+   "date": "2016-04-01",
+   "span": [
+    26,
+    33
+   ]
+  },
+  {
+   "input": "Published: 06/2004",
+   "date": "2004-06-01",
+   "span": [
+    11,
+    18
+   ]
+  },
+  {
+   "input": "50/6/2018",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "99/06/2018",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "The deadline is 123/6/2018",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "6/2018",
+   "date": "2018-06-01",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "Scheduled (6/2018)",
+   "date": "2018-06-01",
+   "span": [
+    11,
+    17
+   ]
+  },
+  {
+   "input": "Published: 6/2018",
+   "date": "2018-06-01",
+   "span": [
+    11,
+    17
+   ]
+  },
+  {
+   "input": "16/6/2018",
+   "date": "2018-06-16",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "50/6/2018; next date: 7/2019",
+   "date": "2019-07-01",
+   "span": [
+    22,
+    28
+   ]
+  },
+  {
+   "input": "8/10",
+   "date": "2027-10-08",
+   "span": [
+    0,
+    4
+   ]
+  },
+  {
+   "input": "8/10/2012 - 8/15/2012",
+   "date": "2012-08-15",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "from 01/21/2021 10:00 to 01/01/2023 07:00",
+   "date": "2021-01-21T10:00",
+   "span": [
+    5,
+    41
+   ]
+  },
+  {
+   "input": "08/08/2023, 09:15 AM to 08/29/2023, 09:15 AM",
+   "date": "2023-08-08T09:15",
+   "span": [
+    0,
+    44
+   ]
+  },
+  {
+   "input": "8/32/2014",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "8/32",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "2/29/2014",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "2014/22/29",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "2014/13/22",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "80-32-89-89",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "02/29/2022",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "06/31/2022",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "06/-31/2022",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "18/13/2022",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "15/28/2022",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "4/13/1",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "5/31",
+   "date": "2027-05-31",
+   "span": [
+    0,
+    4
+   ]
+  },
+  {
+   "input": "1/8 at 12pm",
+   "date": "2027-08-01T12:00",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "14/4 90",
+   "date": "2027-04-14",
+   "span": [
+    0,
+    4
+   ]
+  },
+  {
+   "input": "11 AM",
+   "date": "2026-11-21T11:00",
+   "span": [
+    0,
+    5
+   ]
+  },
+  {
+   "input": "2020 at  11 AM",
+   "date": "2026-11-21T11:00",
+   "span": [
+    5,
+    14
+   ]
+  },
+  {
+   "input": "20:32:13",
+   "date": "2026-11-20T20:32",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "1 at night",
+   "date": "2026-11-21T01:00",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "1 in the afternoon",
+   "date": "2026-11-21T13:00",
+   "span": [
+    0,
+    18
+   ]
+  },
+  {
+   "input": "05/31/2024 14:15",
+   "date": "2024-05-31T14:15",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "05/31/2024.14:15",
+   "date": "2024-05-31T14:15",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "05/31/2024:14:15",
+   "date": "2024-05-31T14:15",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "05/31/2024-14:15",
+   "date": "2024-05-31T14:15",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "14:15 05/31/2024",
+   "date": "2024-05-31T14:15",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "8:23 AM, Jul 9",
+   "date": "2027-07-09T08:23",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "8:23 AM ∙ Jul 9",
+   "date": "2027-07-09T08:23",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "24: July 23, 2026 at 3:30 PM",
+   "date": "2026-07-23T15:30",
+   "span": [
+    4,
+    28
+   ]
+  },
+  {
+   "input": "10:00:00 - 21:45:00",
+   "date": "2026-11-21T10:00",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "10:00:00 until 21:45:00",
+   "date": "2026-11-21T10:00",
+   "span": [
+    0,
+    23
+   ]
+  },
+  {
+   "input": "10:00:00 till 21:45:00",
+   "date": "2026-11-21T10:00",
+   "span": [
+    0,
+    22
+   ]
+  },
+  {
+   "input": "10:00:00 through 21:45:00",
+   "date": "2026-11-21T10:00",
+   "span": [
+    0,
+    25
+   ]
+  },
+  {
+   "input": "10:00:00 - 15/15",
+   "date": "2026-11-21T10:00",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "11 at night",
+   "date": "2026-11-20T23:00",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "11 tonight",
+   "date": "2026-11-20T23:00",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "6 in the morning",
+   "date": "2026-11-21T06:00",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "6 in the afternoon",
+   "date": "2026-11-20T18:00",
+   "span": [
+    0,
+    18
+   ]
+  },
+  {
+   "input": "10 - 11 at night",
+   "date": "2026-11-20T22:00",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "8pm - 11",
+   "date": "2026-11-20T20:00",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "8 - 11pm",
+   "date": "2026-11-20T20:00",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "7 - 8",
+   "date": "2026-11-20T19:00",
+   "span": [
+    0,
+    5
+   ]
+  },
+  {
+   "input": "1pm-3",
+   "date": "2026-11-21T13:00",
+   "span": [
+    0,
+    5
+   ]
+  },
+  {
+   "input": "1am-3",
+   "date": "2026-11-21T01:00",
+   "span": [
+    0,
+    5
+   ]
+  },
+  {
+   "input": "11pm-3",
+   "date": "2026-11-20T23:00",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "12-3am",
+   "date": "2026-11-21T00:00",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "12-3pm",
+   "date": "2026-11-21T12:00",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "December 31, 2022 10:00 pm - 1:00 am",
+   "date": "2022-12-31T22:00",
+   "span": [
+    0,
+    36
+   ]
+  },
+  {
+   "input": "December 31, 2022 10:00 pm - 12:00 am",
+   "date": "2022-12-31T22:00",
+   "span": [
+    0,
+    37
+   ]
+  },
+  {
+   "input": "10pm to 2am",
+   "date": "2026-11-20T22:00",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "11pm - 12am",
+   "date": "2026-11-20T23:00",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "at 1",
+   "date": "2026-11-21T13:00",
+   "span": [
+    0,
+    4
+   ]
+  },
+  {
+   "input": "at 12",
+   "date": "2026-11-21T12:00",
+   "span": [
+    0,
+    5
+   ]
+  },
+  {
+   "input": "at 12.30",
+   "date": "2026-11-21T12:30",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "2020",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "2019 to 2020",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "I'm at 101,194 points!",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "I'm at 101 points!",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "I'm at 10.1",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "I'm at 10.1 - 10.12",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "I'm at 10 - 10.1",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "I'm at 10",
+   "date": "2026-11-21T10:00",
+   "span": [
+    4,
+    9
+   ]
+  },
+  {
+   "input": "I'm at 10 - 20",
+   "date": "2026-11-21T10:00",
+   "span": [
+    4,
+    14
+   ]
+  },
+  {
+   "input": "7-730",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "1am",
+   "date": "2026-11-21T01:00",
+   "span": [
+    0,
+    3
+   ]
+  },
+  {
+   "input": "11am",
+   "date": "2026-11-21T11:00",
+   "span": [
+    0,
+    4
+   ]
+  },
+  {
+   "input": "11am to 1am",
+   "date": "2026-11-21T11:00",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "10am to 12pm",
+   "date": "2026-11-21T10:00",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "5 days ago, we did something",
+   "date": "2026-11-15",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "10 days ago, we did something",
+   "date": "2026-11-10",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "15 minute ago",
+   "date": "2026-11-20T13:45",
+   "span": [
+    0,
+    13
+   ]
+  },
+  {
+   "input": "15 minute earlier",
+   "date": "2026-11-20T13:45",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "15 minute before",
+   "date": "2026-11-20T13:45",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "12 hours ago",
+   "date": "2026-11-20T02:00",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "1h ago",
+   "date": "2026-11-20T13:00",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "1hr ago",
+   "date": "2026-11-20T13:00",
+   "span": [
+    0,
+    7
+   ]
+  },
+  {
+   "input": "half an hour ago",
+   "date": "2026-11-20T13:30",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "12 hours ago I did something",
+   "date": "2026-11-20T02:00",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "12 seconds ago I did something",
+   "date": "2026-11-20T13:59",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "three seconds ago I did something",
+   "date": "2026-11-20T13:59",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "5 Days ago, we did something",
+   "date": "2026-11-15",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "half An hour ago",
+   "date": "2026-11-20T13:30",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "A days ago, we did something",
+   "date": "2026-11-19",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "a min before",
+   "date": "2026-11-20T13:59",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "the min before",
+   "date": "2026-11-20T13:59",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "5 months ago, we did something",
+   "date": "2026-06-20",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "5 years ago, we did something",
+   "date": "2021-11-20",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "a week ago, we did something",
+   "date": "2026-11-13",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "a few days ago, we did something",
+   "date": "2026-11-17",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "15 hours 29 min ago",
+   "date": "2026-11-19T22:31",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "1 day 21 hours ago",
+   "date": "2026-11-18T17:00",
+   "span": [
+    0,
+    18
+   ]
+  },
+  {
+   "input": "1d 21 h 25m ago",
+   "date": "2026-11-18T16:35",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "3 min 49 sec ago",
+   "date": "2026-11-20T13:56",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "3m 49s ago",
+   "date": "2026-11-20T13:56",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "2 day before today",
+   "date": "2026-11-18",
+   "span": [
+    0,
+    18
+   ]
+  },
+  {
+   "input": "the day before yesterday",
+   "date": "2026-11-18",
+   "span": [
+    0,
+    24
+   ]
+  },
+  {
+   "input": "2 day before yesterday",
+   "date": "2026-11-17",
+   "span": [
+    0,
+    22
+   ]
+  },
+  {
+   "input": "a week before yesterday",
+   "date": "2026-11-12",
+   "span": [
+    0,
+    23
+   ]
+  },
+  {
+   "input": "5 minutes ago",
+   "date": "2026-11-20T13:55",
+   "span": [
+    0,
+    13
+   ]
+  },
+  {
+   "input": "5m ago",
+   "date": "2026-11-20T13:55",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "5hr before",
+   "date": "2026-11-20T09:00",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "5 h ago",
+   "date": "2026-11-20T09:00",
+   "span": [
+    0,
+    7
+   ]
+  },
+  {
+   "input": "2 days ago",
+   "date": "2026-11-18",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "2 weeks ago",
+   "date": "2026-11-06",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "2 months ago",
+   "date": "2026-09-20",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "2 years ago",
+   "date": "2024-11-20",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "15 hours 29 min",
+   "date": "2026-11-21T05:29",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "a few hour",
+   "date": "2026-11-20T17:00",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "5 days",
+   "date": "2026-11-25",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "am ago",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "them ago",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "next 2 weeks",
+   "date": "2026-12-04",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "next 2 days",
+   "date": "2026-11-22",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "next two years",
+   "date": "2028-11-20",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "next 2 weeks 3 days",
+   "date": "2026-12-07",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "after a year",
+   "date": "2027-11-20",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "after an hour",
+   "date": "2026-11-20T15:00",
+   "span": [
+    0,
+    13
+   ]
+  },
+  {
+   "input": "last 2 weeks",
+   "date": "2026-11-06",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "last two weeks",
+   "date": "2026-11-06",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "past 2 days",
+   "date": "2026-11-18",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "+2 months, 5 days",
+   "date": "2027-01-25",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "+15 minutes",
+   "date": "2026-11-20T14:15",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "+15min",
+   "date": "2026-11-20T14:15",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "+1 day 2 hour",
+   "date": "2026-11-21T16:00",
+   "span": [
+    0,
+    13
+   ]
+  },
+  {
+   "input": "+1m",
+   "date": "2026-11-20T14:01",
+   "span": [
+    0,
+    3
+   ]
+  },
+  {
+   "input": "-3y",
+   "date": "2023-11-20",
+   "span": [
+    0,
+    3
+   ]
+  },
+  {
+   "input": "-2hr5min",
+   "date": "2026-11-20T11:55",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "-5d 00",
+   "date": "2026-11-15T00:00",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "3y",
+   "date": "2029-11-20",
+   "span": [
+    0,
+    2
+   ]
+  },
+  {
+   "input": "1 m",
+   "date": "2026-11-20T14:01",
+   "span": [
+    0,
+    3
+   ]
+  },
+  {
+   "input": "the day",
+   "date": "2026-11-21",
+   "span": [
+    0,
+    7
+   ]
+  },
+  {
+   "input": "a day",
+   "date": "2026-11-21",
+   "span": [
+    0,
+    5
+   ]
+  },
+  {
+   "input": "+am",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "+them",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "2 days later",
+   "date": "2026-11-22",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "5 minutes later",
+   "date": "2026-11-20T14:05",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "3 week later",
+   "date": "2026-12-11",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "3w later",
+   "date": "2026-12-11",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "3mo later",
+   "date": "2027-02-20",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "5 days from now, we did something",
+   "date": "2026-11-25",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "10 days from now, we did something",
+   "date": "2026-11-30",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "15 minute from now",
+   "date": "2026-11-20T14:15",
+   "span": [
+    0,
+    18
+   ]
+  },
+  {
+   "input": "15 minutes earlier",
+   "date": "2026-11-20T13:45",
+   "span": [
+    0,
+    18
+   ]
+  },
+  {
+   "input": "15 minute out",
+   "date": "2026-11-20T14:15",
+   "span": [
+    0,
+    13
+   ]
+  },
+  {
+   "input": "12 hours from now",
+   "date": "2026-11-21T02:00",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "12 hrs from now",
+   "date": "2026-11-21T02:00",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "half an hour from now",
+   "date": "2026-11-20T14:30",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "12 hours from now I did something",
+   "date": "2026-11-21T02:00",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "12 seconds from now I did something",
+   "date": "2026-11-20T14:00",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "three seconds from now I did something",
+   "date": "2026-11-20T14:00",
+   "span": [
+    0,
+    22
+   ]
+  },
+  {
+   "input": "5 Days from now, we did something",
+   "date": "2026-11-25",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "half An hour from now",
+   "date": "2026-11-20T14:30",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "A days from now, we did something",
+   "date": "2026-11-21",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "a min out",
+   "date": "2026-11-20T14:01",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "in 1 hour",
+   "date": "2026-11-20T15:00",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "in 1 mon",
+   "date": "2026-12-20",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "in 1.5 hours",
+   "date": "2026-11-20T15:30",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "in 1d 2hr 5min",
+   "date": "2026-11-21T16:05",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "in 1d, 2hr, and 5min",
+   "date": "2026-11-21T16:05",
+   "span": [
+    0,
+    20
+   ]
+  },
+  {
+   "input": "the min after",
+   "date": "2026-11-20T14:01",
+   "span": [
+    0,
+    13
+   ]
+  },
+  {
+   "input": "15 minutes from now",
+   "date": "2026-11-20T14:15",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "25 minutes later",
+   "date": "2026-11-20T14:25",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "15m from now",
+   "date": "2026-11-20T14:15",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "15s later",
+   "date": "2026-11-20T14:00",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "2 day after today",
+   "date": "2026-11-22",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "the day after tomorrow",
+   "date": "2026-11-22",
+   "span": [
+    0,
+    22
+   ]
+  },
+  {
+   "input": "2 day after tomorrow",
+   "date": "2026-11-23",
+   "span": [
+    0,
+    20
+   ]
+  },
+  {
+   "input": "a week after tomorrow",
+   "date": "2026-11-28",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "next tuesday +10 days",
+   "date": "2026-12-04",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "2023-12-29 -10days",
+   "date": "2023-12-19",
+   "span": [
+    0,
+    18
+   ]
+  },
+  {
+   "input": "now + 40minutes",
+   "date": "2026-11-20T14:40",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "tell them later",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "we have to make something in 5 days.",
+   "date": "2026-11-25",
+   "span": [
+    26,
+    35
+   ]
+  },
+  {
+   "input": "we have to make something in five days.",
+   "date": "2026-11-25",
+   "span": [
+    26,
+    38
+   ]
+  },
+  {
+   "input": "we have to make something within 10 day",
+   "date": "2026-11-30",
+   "span": [
+    26,
+    39
+   ]
+  },
+  {
+   "input": "in 5 minutes",
+   "date": "2026-11-20T14:05",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "wait for 5 minutes",
+   "date": "2026-11-20T14:05",
+   "span": [
+    5,
+    18
+   ]
+  },
+  {
+   "input": "within 1 hour",
+   "date": "2026-11-20T15:00",
+   "span": [
+    0,
+    13
+   ]
+  },
+  {
+   "input": "In 5 minutes I will go home",
+   "date": "2026-11-20T14:05",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "In 5 minutes A car need to move",
+   "date": "2026-11-20T14:05",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "In 5 seconds A car need to move",
+   "date": "2026-11-20T14:00",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "within half an hour",
+   "date": "2026-11-20T14:30",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "in half a quarter",
+   "date": "2027-01-03",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "within two weeks",
+   "date": "2026-12-04",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "within a month",
+   "date": "2026-12-20",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "within a few months",
+   "date": "2027-02-20",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "within one year",
+   "date": "2027-11-20",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "within one Year",
+   "date": "2027-11-20",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "within One year",
+   "date": "2027-11-20",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "In 5 Minutes A car need to move",
+   "date": "2026-11-20T14:05",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "In 5 mins a car need to move",
+   "date": "2026-11-20T14:05",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "in a week",
+   "date": "2026-11-27",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "In around 5 hours",
+   "date": "2026-11-20T19:00",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "In about ~5 hours",
+   "date": "2026-11-20T19:00",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "in 1 month",
+   "date": "2026-12-20",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "set a timer for 5 minutes 30 seconds",
+   "date": "2026-11-20T14:05",
+   "span": [
+    12,
+    36
+   ]
+  },
+  {
+   "input": "set a timer for 5 minutes, 30 seconds",
+   "date": "2026-11-20T14:05",
+   "span": [
+    12,
+    37
+   ]
+  },
+  {
+   "input": "set a timer for 1 hour, 5 minutes, 30 seconds",
+   "date": "2026-11-20T15:05",
+   "span": [
+    12,
+    45
+   ]
+  },
+  {
+   "input": "set a timer for 5 minutes and 30 seconds",
+   "date": "2026-11-20T14:05",
+   "span": [
+    12,
+    40
+   ]
+  },
+  {
+   "input": "set a timer for 1 hour, 5 minutes, and 30 seconds",
+   "date": "2026-11-20T15:05",
+   "span": [
+    12,
+    49
+   ]
+  },
+  {
+   "input": "In  about 5 hours",
+   "date": "2026-11-20T19:00",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "within around 3 hours",
+   "date": "2026-11-20T17:00",
+   "span": [
+    0,
+    21
+   ]
+  },
+  {
+   "input": "In several hours",
+   "date": "2026-11-20T21:00",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "In a couple of days",
+   "date": "2026-11-22",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "within 30 days",
+   "date": "2026-12-20",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "in 24 hours",
+   "date": "2026-11-21T14:00",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "in one day",
+   "date": "2026-11-21",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "in 2 minute",
+   "date": "2026-11-20T14:02",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "in 2hour",
+   "date": "2026-11-20T16:00",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "in a few year",
+   "date": "2029-11-20",
+   "span": [
+    0,
+    13
+   ]
+  },
+  {
+   "input": "within 12 month",
+   "date": "2027-11-20",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "within 3 days",
+   "date": "2026-11-23",
+   "span": [
+    0,
+    13
+   ]
+  },
+  {
+   "input": "give it 2 months",
+   "date": "2027-01-20",
+   "span": [
+    8,
+    16
+   ]
+  },
+  {
+   "input": "in 15m",
+   "date": "2026-11-20T14:15",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "within 5hr",
+   "date": "2026-11-20T19:00",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "1 hour",
+   "date": "2026-11-20T15:00",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "1 month",
+   "date": "2026-12-20",
+   "span": [
+    0,
+    7
+   ]
+  },
+  {
+   "input": "in am",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "in them",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "the second half",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "Monday",
+   "date": "2026-11-23",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "Thursday",
+   "date": "2026-11-26",
+   "span": [
+    0,
+    8
+   ]
+  },
+  {
+   "input": "Sunday",
+   "date": "2026-11-22",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "The Deadline is last Friday...",
+   "date": "2026-11-27",
+   "span": [
+    16,
+    27
+   ]
+  },
+  {
+   "input": "The Deadline is past Friday...",
+   "date": "2026-11-27",
+   "span": [
+    16,
+    27
+   ]
+  },
+  {
+   "input": "Let's have a meeting on Friday next week",
+   "date": "2026-11-23",
+   "span": [
+    21,
+    40
+   ]
+  },
+  {
+   "input": "I plan on taking the day off on Tuesday, next week",
+   "date": "2026-11-21",
+   "span": [
+    17,
+    24
+   ]
+  },
+  {
+   "input": "This Saturday",
+   "date": "2026-11-21",
+   "span": [
+    0,
+    13
+   ]
+  },
+  {
+   "input": "This Sunday",
+   "date": "2026-11-22",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "This Wednesday",
+   "date": "2026-11-25",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "Last Saturday",
+   "date": "2026-11-21",
+   "span": [
+    0,
+    13
+   ]
+  },
+  {
+   "input": "Last Sunday",
+   "date": "2026-11-22",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "Last Wednesday",
+   "date": "2026-11-25",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "Next Saturday",
+   "date": "2026-11-28",
+   "span": [
+    0,
+    13
+   ]
+  },
+  {
+   "input": "Next Sunday",
+   "date": "2026-11-29",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "Next Wednesday",
+   "date": "2026-11-25",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "last weekend",
+   "date": "2026-11-22",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "this weekend",
+   "date": "2026-11-21",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "next weekend",
+   "date": "2026-11-28",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "last weekday",
+   "date": "2026-11-26",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "next weekday",
+   "date": "2026-11-23",
+   "span": [
+    0,
+    12
+   ]
+  },
+  {
+   "input": "Lets meet on Tuesday morning",
+   "date": "2026-11-24",
+   "span": [
+    10,
+    28
+   ]
+  },
+  {
+   "input": "Sunday, December 7, 2014",
+   "date": "2014-12-07",
+   "span": [
+    0,
+    24
+   ]
+  },
+  {
+   "input": "Sunday 12/7/2014",
+   "date": "2014-07-12",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "Friday to Monday",
+   "date": "2026-11-27",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "Monday to Friday",
+   "date": "2026-11-23",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "Tuesday of next week",
+   "date": "2026-11-23",
+   "span": [
+    0,
+    20
+   ]
+  },
+  {
+   "input": "Friday of next week",
+   "date": "2026-11-23",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "Monday of next week",
+   "date": "2026-11-23",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "Tuesday of last week",
+   "date": "2026-11-24",
+   "span": [
+    0,
+    20
+   ]
+  },
+  {
+   "input": "Friday of last week",
+   "date": "2026-11-27",
+   "span": [
+    0,
+    19
+   ]
+  },
+  {
+   "input": "Wednesday of this week",
+   "date": "2026-11-25",
+   "span": [
+    0,
+    22
+   ]
+  },
+  {
+   "input": "Tuesday of this week",
+   "date": "2026-11-24",
+   "span": [
+    0,
+    20
+   ]
+  },
+  {
+   "input": "Tuesday of next week after 2pm",
+   "date": "2026-11-23T14:00",
+   "span": [
+    0,
+    30
+   ]
+  },
+  {
+   "input": "Friday of next week at 9am",
+   "date": "2026-11-23T09:00",
+   "span": [
+    0,
+    26
+   ]
+  },
+  {
+   "input": "Let's sync on Tuesday of next week",
+   "date": "2026-11-23",
+   "span": [
+    11,
+    34
+   ]
+  },
+  {
+   "input": "Monday (forward dates only)",
+   "date": "2026-11-23",
+   "span": [
+    0,
+    6
+   ]
+  },
+  {
+   "input": "this Friday to this Monday",
+   "date": "2026-11-27",
+   "span": [
+    0,
+    26
+   ]
+  },
+  {
+   "input": "sunday morning",
+   "date": "2026-11-22",
+   "span": [
+    0,
+    14
+   ]
+  },
+  {
+   "input": "vacation monday - friday",
+   "date": "2026-11-23",
+   "span": [
+    9,
+    24
+   ]
+  },
+  {
+   "input": "timeoff monday 7 to 9am",
+   "date": "2026-11-23T19:00",
+   "span": [
+    8,
+    23
+   ]
+  },
+  {
+   "input": "10 August 234 BCE",
+   "date": "-234-08-10",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "10 August 88 CE",
+   "date": "88-08-10",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "10 August 234 BC",
+   "date": "-234-08-10",
+   "span": [
+    0,
+    16
+   ]
+  },
+  {
+   "input": "10 August 88 AD",
+   "date": "88-08-10",
+   "span": [
+    0,
+    15
+   ]
+  },
+  {
+   "input": "10 August 2555 BE",
+   "date": "2012-08-10",
+   "span": [
+    0,
+    17
+   ]
+  },
+  {
+   "input": "Thu Oct 26 11:00:09 2023",
+   "date": "2026-11-26",
+   "span": [
+    0,
+    3
+   ]
+  },
+  {
+   "input": "Thu Oct 26 11:00:09 EDT 2023",
+   "date": "2026-11-26",
+   "span": [
+    0,
+    3
+   ]
+  },
+  {
+   "input": "Thu Oct 26 - 28, 11:00:09 2023",
+   "date": "2023-10-26T11:00",
+   "span": [
+    0,
+    30
+   ]
+  },
+  {
+   "input": "Thu Oct 26, 10:00 - 11:00:09 2023",
+   "date": "2026-11-26",
+   "span": [
+    0,
+    3
+   ]
+  },
+  {
+   "input": "2012/8/10",
+   "date": "2012-08-10",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "The Deadline is 2012/8/10",
+   "date": "2012-08-10",
+   "span": [
+    16,
+    25
+   ]
+  },
+  {
+   "input": "2014/2/28",
+   "date": "2014-02-28",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "2014/12/28",
+   "date": "2014-12-28",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "2014.12.28",
+   "date": "2014-12-28",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "2014 12 28",
+   "date": "2014-12-28",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "2012/Aug/10",
+   "date": "2012-08-10",
+   "span": [
+    0,
+    11
+   ]
+  },
+  {
+   "input": "The Deadline is 2012/aug/10",
+   "date": "2012-08-10",
+   "span": [
+    16,
+    27
+   ]
+  },
+  {
+   "input": "The Deadline is 2018 March 18",
+   "date": "2018-03-18",
+   "span": [
+    16,
+    29
+   ]
+  },
+  {
+   "input": "2024/13/1",
+   "date": "2024-01-13",
+   "span": [
+    0,
+    9
+   ]
+  },
+  {
+   "input": "2024-13-01",
+   "date": "2024-01-13",
+   "span": [
+    0,
+    10
+   ]
+  },
+  {
+   "input": "2012/80/10",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "2012 80 10",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "2014-08-32",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "2014-02-30",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "3",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "1",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "11",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "0.5",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "35.49",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "12.53%",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "6358fe2310> *5.0* / 5 Outstanding",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "6358fe2310> *1.5* / 5 Outstanding",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "Total: $1,194.09 [image: View Reservation",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "at 6.5 kilograms",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "ah that is unusual",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "%e7%b7%8a",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "https://tenor.com/view/%e3%83%89%e3%82%ad%e3%83%89%e3%82%ad-",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "1-2",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "1-2-3",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "4-5-6",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "20-30-12",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "2012",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "2012-14",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "2012-1400",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "2200-25",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "February 29, 2022",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "June 31, 2022",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "14PM",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "25:12",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "An appointment on 13/31/2018",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "February 20 - 29, 2022",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "June 10 - 31, 2022",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "Version: 1.1.3",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "Version: 1.1.30",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "Version: 1.10.30",
+   "date": null,
+   "span": null
+  },
+  {
+   "input": "1.5.3 - 2015-09-24",
+   "date": "2015-09-24",
+   "span": [
+    8,
+    18
+   ]
+  },
+  {
+   "input": "1.5.30 - 2015-09-24",
+   "date": "2015-09-24",
+   "span": [
+    9,
+    19
+   ]
+  },
+  {
+   "input": "1.50.30 - 2015-09-24",
+   "date": "2015-09-24",
+   "span": [
+    10,
+    20
+   ]
+  }
+ ]
+}

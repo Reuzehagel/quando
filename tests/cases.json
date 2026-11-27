@@ -441,7 +441,7 @@
       "input": "standup every weekday at 9",
       "want": {
         "title": "standup",
-        "date": "2026-11-21T09:00",
+        "date": "2026-11-23T09:00",
         "list": null,
         "tags": [],
         "priority": 0,
