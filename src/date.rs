@@ -2,7 +2,7 @@
 // as in "Tuesday, 10 January", "12th of July at 19:00" or "tonight at 8".
 use crate::calendar::{civil_from_days, days_from_civil, valid, weekday_of};
 use crate::words::{month, spaced, weekday, Word};
-use crate::DateTime;
+use crate::{DateTime, Options};
 
 pub enum Day {
     /// A calendar date; without a year it is the next one from today.
@@ -20,8 +20,10 @@ pub enum Day {
     LastWeekday(u8),
     /// "next friday": that day in next week. Weeks start on Monday.
     NextWeekday(u8),
-    /// "this weekend", "next weekend": the Saturday of this week or the next, and never before today.
+    /// "this weekend", "next weekend": the Saturday of this week or the next; never before today when looking forward.
     Weekend(i64),
+    /// "this week", "this month", "this year": its first day; today when looking forward.
+    This(Period),
     /// "the 5th": the next 5th of a month, today included.
     Ordinal(u8),
     InDays(i64),
@@ -30,6 +32,12 @@ pub enum Day {
     Ahead(Amount),
     /// "2 weeks after yesterday", "the day before friday": the amount counts from that day.
     From(Amount, Box<Day>),
+}
+
+pub enum Period {
+    Week,
+    Month,
+    Year,
 }
 
 #[derive(Clone, Copy, Default)]
@@ -75,7 +83,7 @@ pub struct DateMatch {
 }
 
 /// A date phrase starting at word `i`.
-pub fn read_date(rest: &str, ws: &[Word], i: usize) -> Option<DateMatch> {
+pub fn read_date(rest: &str, ws: &[Word], i: usize, o: &Options) -> Option<DateMatch> {
     // not from inside a number: the "6/2018" in "50/6/2018", the "1" in "10.1"; "...Thursday" is no number
     if let [.., digit, mark] = &rest.as_bytes()[..ws[i].start]
         && digit.is_ascii_digit()
@@ -89,7 +97,7 @@ pub fn read_date(rest: &str, ws: &[Word], i: usize) -> Option<DateMatch> {
     }
     let mut m = DateMatch { day: None, time: None, part: None, end: 0 };
     let (mut j, mut after) = (i, i);
-    while let Some(k) = read_part(rest, ws, j, &mut m) {
+    while let Some(k) = read_part(rest, ws, j, &mut m, o) {
         (m.end, after) = (ws[k - 1].end, k);
         let Some(next) = joined(rest, ws, k) else { break };
         // "12th of July", "at midnight on 12th August", "tomorrow by 5pm"
@@ -109,7 +117,7 @@ pub fn read_date(rest: &str, ws: &[Word], i: usize) -> Option<DateMatch> {
     }
     // a range is its start, and the span runs to its end: "monday - friday", "10pm to 2am"
     if after > i
-        && let Some(to) = range_end(rest, ws, after).and_then(|k| read_date(rest, ws, k))
+        && let Some(to) = range_end(rest, ws, after).and_then(|k| read_date(rest, ws, k, o))
     {
         m.end = to.end;
         // the start borrows what only the end says: the year in "Aug 10 - Nov 12, 2013", the day in "9am to 5pm, Tuesday"
@@ -151,7 +159,7 @@ fn joined(rest: &str, ws: &[Word], k: usize) -> Option<usize> {
 }
 
 /// Reads one part at word `j` into `m`, if it fills something `m` lacks; returns the word after it.
-fn read_part(rest: &str, ws: &[Word], j: usize, m: &mut DateMatch) -> Option<usize> {
+fn read_part(rest: &str, ws: &[Word], j: usize, m: &mut DateMatch, o: &Options) -> Option<usize> {
     let w = ws[j].lower.as_str();
 
     // "tonight", "this morning": a day and a part at once
@@ -168,7 +176,7 @@ fn read_part(rest: &str, ws: &[Word], j: usize, m: &mut DateMatch) -> Option<usi
     }
     // a day; a weekday gives way to a date ("Tuesday, 10 January")
     if matches!(m.day, None | Some(Day::Weekday(_))) && !(m.day.is_some() && weekday(w).is_some())
-        && let Some((d, k)) = read_day(rest, ws, j)
+        && let Some((d, k)) = read_day(rest, ws, j, o)
         && (m.day.is_none() || matches!(d, Day::On { .. })) {
             m.day = Some(d);
             return Some(k);
@@ -341,7 +349,7 @@ fn short_year(rest: &str, ws: &[Word], j: usize) -> Option<i32> {
 }
 
 /// "2 weeks after yesterday", "the day before friday", "day after tomorrow": whole days on from another day.
-fn offset(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
+fn offset(rest: &str, ws: &[Word], i: usize, o: &Options) -> Option<(Day, usize)> {
     // "day after tomorrow" is one day without saying so
     let (a, k) = if ws[i].lower == "day" { (unit("day")?, i + 1) } else { read_amount(rest, ws, i)? };
     let sign = match ws.get(k)?.lower.as_str() {
@@ -352,17 +360,17 @@ fn offset(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
     if a.moment || !spaced(rest, &ws[k - 1], &ws[k]) || !spaced(rest, &ws[k], ws.get(k + 1)?) {
         return None;
     }
-    let (base, end) = read_day(rest, ws, k + 1)?;
+    let (base, end) = read_day(rest, ws, k + 1, o)?;
     Some((Day::From(a.times(sign), Box::new(base)), end))
 }
 
 /// The day part, and the index of the word after it. A date that can't exist ("31/2") isn't one.
-fn read_day(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
+fn read_day(rest: &str, ws: &[Word], i: usize, o: &Options) -> Option<(Day, usize)> {
     // 2000 was a leap year, so a 29 Feb without a year passes
-    read_day_any(rest, ws, i).filter(|(d, _)| !matches!(*d, Day::On { year, month, day } if !valid(year.unwrap_or(2000), month, day)))
+    read_day_any(rest, ws, i, o).filter(|(d, _)| !matches!(*d, Day::On { year, month, day } if !valid(year.unwrap_or(2000), month, day)))
 }
 
-fn read_day_any(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
+fn read_day_any(rest: &str, ws: &[Word], i: usize, o: &Options) -> Option<(Day, usize)> {
     let at = |j: usize| (j < ws.len()).then(|| ws[j].lower.as_str());
     let spaced_to = |j: usize| j < ws.len() && spaced(rest, &ws[j - 1], &ws[j]);
     let sep = |j: usize, s: &str| j < ws.len() && &rest[ws[j - 1].end..ws[j].start] == s;
@@ -381,14 +389,15 @@ fn read_day_any(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
         "this" if spaced_to(i + 1) => {
             return match at(i + 1)? {
                 "weekend" => Some((Day::Weekend(0), i + 2)),
-                // the start of it, and never before today (like "this weekend"), which is always today
-                "week" | "month" | "year" => Some((Day::InDays(0), i + 2)),
+                "week" => Some((Day::This(Period::Week), i + 2)),
+                "month" => Some((Day::This(Period::Month), i + 2)),
+                "year" => Some((Day::This(Period::Year), i + 2)),
                 w => Some((Day::Weekday(weekday(w)?), i + 2)),
             };
         }
         // "the 5th", "the 5th of December"; a plain "the 2" is a count, not a day
         "the" if spaced_to(i + 1) => {
-            if let Some((d @ (Day::On { .. } | Day::From(..)), k)) = read_day_any(rest, ws, i + 1) {
+            if let Some((d @ (Day::On { .. } | Day::From(..)), k)) = read_day_any(rest, ws, i + 1, o) {
                 return Some((d, k));
             }
             let w = at(i + 1)?;
@@ -416,7 +425,7 @@ fn read_day_any(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
         },
         _ => {}
     }
-    if let Some(found) = offset(rest, ws, i) {
+    if let Some(found) = offset(rest, ws, i, o) {
         return Some(found);
     }
     // "+15min", "5 days ago", "2 days later", "3 weeks from now"; a bare "10 minutes" is a length, not a date
@@ -469,7 +478,7 @@ fn read_day_any(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
             return Some((Day::On { year: y, month: m, day }, k + 1 + y.is_some() as usize));
         }
         // "10 - 22 August": the 10th of that August
-        if let Some((Day::On { year, month, .. }, end)) = range_end(rest, ws, k).and_then(|j| read_day(rest, ws, j)) {
+        if let Some((Day::On { year, month, .. }, end)) = range_end(rest, ws, k).and_then(|j| read_day(rest, ws, j, o)) {
             return Some((Day::On { year, month, day }, end));
         }
     }
@@ -500,7 +509,9 @@ fn read_day_any(rest: &str, ws: &[Word], i: usize) -> Option<(Day, usize)> {
     if sep(i + 2, "/") && y.is_none() {
         return None;
     }
-    let (day, month) = if valid(y.unwrap_or(2000), b, a) { (a, b) } else { (b, a) };
+    // the order the options prefer, unless only the other one is a date
+    let first = if o.day_first { (a, b) } else { (b, a) };
+    let (day, month) = if valid(y.unwrap_or(2000), first.1, first.0) { first } else { (first.1, first.0) };
     Some((Day::On { year: y, month, day }, i + 2 + y.is_some() as usize))
 }
 
@@ -596,7 +607,7 @@ fn ahead_days(now: DateTime, a: Amount) -> i64 {
 }
 
 /// The phrase as a moment, and whether it has a time.
-pub fn resolve(m: DateMatch, now: DateTime) -> (DateTime, bool) {
+pub fn resolve(m: DateMatch, now: DateTime, o: &Options) -> (DateTime, bool) {
     let today = days_from_civil(now.year, now.month, now.day);
     if let Some(Day::Ahead(a @ Amount { moment: true, .. })) = m.day {
         let at = ahead_days(now, a) * 1440 + now.hour as i64 * 60 + now.minute as i64 + a.minutes;
@@ -611,17 +622,17 @@ pub fn resolve(m: DateMatch, now: DateTime) -> (DateTime, bool) {
             Some(Part::Afternoon | Part::Evening) => t.hour < 12,
             // "11 at night" is 23:00, "1 at night" is 01:00
             Some(Part::Night) => (6..12).contains(&t.hour),
-            // A bare "5" is 17:00, since nobody plans tasks for 05:00; "05:00" means what it says.
-            None => !t.zero && (1..=7).contains(&t.hour),
+            // with `bare_hour_pm`, a bare "5" is 17:00; "05:00" means what it says.
+            None => o.bare_hour_pm && !t.zero && (1..=7).contains(&t.hour),
         };
         if pm {
             hour += 12;
         }
     }
     let days = match m.day {
-        Some(d) => day_of(d, now),
-        // "at 5": today, unless it has passed
-        None if (hour, minute) <= (now.hour, now.minute) => today + 1,
+        Some(d) => day_of(d, now, o.forward),
+        // "at 5": today, unless it has passed and the options look forward
+        None if o.forward && (hour, minute) <= (now.hour, now.minute) => today + 1,
         None => today,
     };
     let (year, month, day) = civil_from_days(days);
@@ -629,7 +640,7 @@ pub fn resolve(m: DateMatch, now: DateTime) -> (DateTime, bool) {
 }
 
 /// The day a phrase names, in days since 1970.
-fn day_of(d: Day, now: DateTime) -> i64 {
+fn day_of(d: Day, now: DateTime, forward: bool) -> i64 {
     let today = days_from_civil(now.year, now.month, now.day);
     // the month of a name: this one, or the next with that name
     let named = |year: Option<i32>, month: u8| year.unwrap_or(if month >= now.month { now.year } else { now.year + 1 });
@@ -637,8 +648,16 @@ fn day_of(d: Day, now: DateTime) -> i64 {
     match d {
         Day::InDays(n) => today + n,
         Day::NextWeekday(d) => monday + 7 + (d as i64 + 6).rem_euclid(7),
-        // on a Sunday, this weekend is today
-        Day::Weekend(n) => (monday + 5 + 7 * n).max(today),
+        // looking forward, this weekend on a Sunday is today
+        Day::Weekend(n) => if forward { (monday + 5 + 7 * n).max(today) } else { monday + 5 + 7 * n },
+        Day::This(p) => {
+            let start = match p {
+                Period::Week => monday,
+                Period::Month => days_from_civil(now.year, now.month, 1),
+                Period::Year => days_from_civil(now.year, 1, 1),
+            };
+            if forward { start.max(today) } else { start }
+        }
         Day::Ordinal(d) => (0..13)
             .map(|k| months_on(now, k))
             .filter(|&(y, mo)| valid(y, mo, d))
@@ -647,7 +666,7 @@ fn day_of(d: Day, now: DateTime) -> i64 {
             .unwrap_or(today),
         Day::Ahead(a) => ahead_days(now, a),
         Day::From(a, base) => {
-            let (year, month, day) = civil_from_days(day_of(*base, now));
+            let (year, month, day) = civil_from_days(day_of(*base, now, forward));
             ahead_days(DateTime { year, month, day, ..now }, a)
         }
         // "fri" on a Friday means next week

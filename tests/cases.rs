@@ -1,6 +1,27 @@
 // Runs tests/cases.json (parity with OpenTodo) and tests/quando.json (our own); each fails with a scoreboard.
-use quando::{parse, DateTime, Parsed, SpanKind, Unit};
+use quando::{dates, parse, DateTime, Options, Parsed, SpanKind, Unit};
 use serde_json::{json, Value};
+
+/// `dates` finds every date in free text; the default options read as chrono-node does, `todo()` as `parse` does.
+#[test]
+fn options() {
+    let now = datetime("2026-11-20T14:00");
+    fn found<'a>(s: &'a str, o: &Options) -> Vec<(&'a str, DateTime)> {
+        dates(s, datetime("2026-11-20T14:00"), o).iter().map(|f| (&s[f.start..f.end], f.date)).collect()
+    }
+    let general = Options::default();
+    assert_eq!(found("call me 3/12 at 5, or else friday", &general), [("3/12 at 5", datetime("2027-03-12T05:00")), ("friday", datetime("2026-11-27T00:00"))]);
+    assert_eq!(found("call me 3/12 at 5", &Options::todo()), [("3/12 at 5", datetime("2026-12-03T17:00"))]);
+    // a passed time stays today, and "this month" is its 1st, unless looking forward
+    assert_eq!(found("at 9", &general), [("at 9", datetime("2026-11-20T09:00"))]);
+    assert_eq!(found("this month", &general), [("this month", datetime("2026-11-01T00:00"))]);
+    assert_eq!(found("this month", &Options::todo()), [("this month", datetime("2026-11-20T00:00"))]);
+    // only one order is a date, so the option doesn't matter
+    assert_eq!(found("5/31", &Options::todo())[0].1, datetime("2027-05-31T00:00"));
+    assert_eq!(found("31/5", &general)[0].1, datetime("2027-05-31T00:00"));
+    assert!(dates("tomorrow's paper", now, &general).is_empty());
+    assert_eq!(found("+15min", &general), [("+15min", datetime("2026-11-20T14:15"))]);
+}
 
 fn datetime(s: &str) -> DateTime {
     let n = |r: std::ops::Range<usize>| s[r].parse::<i32>().unwrap();

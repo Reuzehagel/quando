@@ -1,15 +1,34 @@
 # quando
 
-A natural-language parser for one typed line: `dentist fri 9 #health !!` reads as a title, a date and time, a list, a priority and repeats, plus the spans an editor highlights while you type. Rust with no runtime dependencies, for native apps and WebAssembly (the browser and Cloudflare Workers) alike.
+A natural-language date parser for English, in Rust with no runtime dependencies, for native apps and WebAssembly (the browser and Cloudflare Workers) alike. `dates` finds every date in a sentence; `parse` reads one todo line, `dentist fri 9 #health !!`, as a title, a date and time, a list, a priority and repeats, plus the spans an editor highlights while you type.
 
 ```rust
-let p = quando::parse("call bank at 5 tomorrow #admin", now, &[]);
+use quando::{dates, parse, Options};
+
+let found = dates("call me 3/12 at 5, or else friday", now, &Options::default());
+// "3/12 at 5" is 12 March 05:00, "friday" is the coming Friday; each with its byte offsets
+
+let p = parse("call bank at 5 tomorrow #admin", now, &[]);
 // p.title == "call bank", p.date == 2026-11-21 17:00, p.list == Some("admin")
 ```
 
-`now` is a wall-clock time: quando reads the line in whatever zone `now` is in. `ignored` holds span texts the user turned back into plain text ("buy tomorrow's paper").
+`now` is a wall-clock time: quando reads the text in whatever zone `now` is in. `ignored` holds span texts the user turned back into plain text ("buy tomorrow's paper").
+
+## Options
+
+Some readings depend on who is typing. `Options::default()` reads as chrono-node does; `Options::todo()`, which `parse` uses, turns all three on. `parse_with` takes your own.
+
+| Field | Off (default) | On (`todo()`) |
+|---|---|---|
+| `day_first` | `3/12` is 12 March | `3/12` is 3 December |
+| `forward` | `at 9` at 14:00 is 09:00 today; `this month` is the 1st | `at 9` is tomorrow; `this month`, `this week`, `this weekend` are never before today |
+| `bare_hour_pm` | `at 5` is 05:00 | `at 5` is 17:00 (a bare 1 to 7); `5am` and `05:00` still mean what they say |
+
+A date that only reads one way (`5/31`, `31/5`) reads that way under either `day_first`. Weeks start on Monday in both.
 
 ## What it reads
+
+As `parse` reads it, with `Options::todo()`; the options above change only what their row says.
 
 - Days: `today`, `tomorrow`, `yesterday`, `tonight`, `this morning`, weekdays (`fri`, `friday`, `this wednesday`), `next friday` (that day in next week; weeks start on Monday), `this weekend`, `next weekend` (the Saturday; on a Sunday, this weekend is today), `the 5th` (the next 5th, today included), `the 5th of December`, `27 nov`, `nov 27th`, `12th of July`, `Dec. 21`, `27 nov 2027`, `Jan 1, 2020`, `3/12` (day first), `5/31` (month first when day first can't be a date), `3/12/2026`, `2014-04-18`, `2027/1/9`, `9-jan-2027`, `15sep`. A two-digit year counts only where the phrase ends and it can't be an hour: `3 aug 27` is 2027, "dec 5 50 invitations" is a count.
 - Months: `in June`, `September 2012`, `9/2012`, `2024-Aug`, `end of month`, `end of next month`, `end of July`, `end of this year`, `last day of July`. A month name alone stays text: "call may".

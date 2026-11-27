@@ -3,7 +3,7 @@ name = "quando"
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
-description = "Natural-language parser for one typed line: dates, times, repeats and markers, with spans."
+description = "Natural-language date parser for English: every date in a sentence, or a todo line as title, date, repeats and markers, with spans."
 repository = "https://github.com/Reuzehagel/quando"
 
 [dependencies]
