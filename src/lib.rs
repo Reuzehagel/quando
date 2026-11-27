@@ -29,6 +29,7 @@ pub struct DateTime {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
 pub enum SpanKind {
     Date,
     Repeat,
@@ -39,6 +40,7 @@ pub enum SpanKind {
 
 /// A part of the line that was read as something; `start..end` are byte offsets into the input.
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
 pub struct Span {
     pub start: usize,
     pub end: usize,
@@ -69,6 +71,7 @@ impl Options {
 
 /// A date found in text: `start..end` are byte offsets into it.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
 pub struct Found {
     pub start: usize,
     pub end: usize,

@@ -5,6 +5,7 @@ use crate::words::{weekday, Text};
 use crate::{DateTime, Options, Span, SpanKind};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
 pub enum Unit {
     Day,
     Week,
@@ -13,6 +14,7 @@ pub enum Unit {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
 pub struct Repeat {
     pub every: u32,
     pub unit: Unit,
@@ -38,6 +40,7 @@ impl Repeat {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
 pub struct Parsed {
     pub title: String,
     pub date: Option<DateTime>,
